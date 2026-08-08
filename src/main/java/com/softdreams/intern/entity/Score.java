@@ -37,5 +37,4 @@ public class Score {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", nullable = false)
     Subject subject;
-
 }

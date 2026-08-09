@@ -3,11 +3,16 @@ package com.softdreams.intern.mapper.impl;
 import com.softdreams.intern.dto.request.CreateTeacherRequest;
 import com.softdreams.intern.dto.response.TeacherResponse;
 import com.softdreams.intern.entity.Teacher;
+import com.softdreams.intern.mapper.AccountMapper;
 import com.softdreams.intern.mapper.TeacherMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class TeacherMapperImpl implements TeacherMapper {
+    final AccountMapper accountMapper;
+
     @Override
     public Teacher toTeacher(CreateTeacherRequest request) {
         if ( request == null ) {
@@ -39,6 +44,9 @@ public class TeacherMapperImpl implements TeacherMapper {
         teacherResponse.setGender( teacher.getGender() );
         teacherResponse.setDateOfBirth( teacher.getDateOfBirth() );
         teacherResponse.setDepartment( teacher.getDepartment() );
+        if (teacher.getAccount() != null) {
+            teacherResponse.setAccount(accountMapper.toResponse(teacher.getAccount()));
+        }
 
         return teacherResponse;
     }

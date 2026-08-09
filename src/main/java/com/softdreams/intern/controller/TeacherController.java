@@ -1,13 +1,13 @@
 package com.softdreams.intern.controller;
 
+import com.softdreams.intern.dto.request.AssignAccountRequest;
 import com.softdreams.intern.dto.request.CreateTeacherRequest;
+import com.softdreams.intern.dto.response.ApiResponse;
 import com.softdreams.intern.dto.response.TeacherResponse;
 import com.softdreams.intern.service.TeacherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/teachers")
@@ -18,5 +18,14 @@ public class TeacherController {
     @PostMapping
     public TeacherResponse addTeacher(@RequestBody CreateTeacherRequest request) {
         return teacherService.addTeacher(request);
+    }
+
+    @PatchMapping("/{code}/account")
+    public ApiResponse<TeacherResponse> createAccount(
+            @PathVariable("code") String code,
+            @RequestBody @Valid AssignAccountRequest request) {
+        return ApiResponse.<TeacherResponse>builder()
+                .data(teacherService.createAccount(code, request.getPassword(), "ROLE_TEACHER"))
+                .build();
     }
 }

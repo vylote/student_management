@@ -16,7 +16,7 @@ import java.util.List;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Teacher {
+public class Teacher implements HasAccount{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

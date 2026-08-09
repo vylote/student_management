@@ -11,7 +11,7 @@ import com.softdreams.intern.mapper.StudentMapper;
 import com.softdreams.intern.mapper.SubjectMapper;
 import com.softdreams.intern.repository.ScoreRepository;
 import com.softdreams.intern.repository.StudentRepository;
-import com.softdreams.intern.repository.SubjectRepository;
+import com.softdreams.intern.service.AccountService;
 import com.softdreams.intern.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,8 @@ public class StudentServiceImpl implements StudentService {
     final ScoreRepository scoreRepository;
 
     final SubjectMapper subjectMapper;
-    private final SubjectRepository subjectRepository;
+
+    final AccountService accountService;
 
     @Override
     public StudentResponse addStudent(CreateStudentRequest request) {
@@ -67,5 +68,14 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return subjectMapper.toResponses(subjects);
+    }
+
+    @Override
+    public StudentResponse createAccount(String code, String password, String roleCode) {
+        Student student = studentRepository.findByCode(code)
+                .orElseThrow(() -> new AppException(ErrorCode.STUDENT_NOT_FOUND));
+
+        Student saved = accountService.createAccount(student, studentRepository, password, roleCode);
+        return studentMapper.toResponse(saved);
     }
 }

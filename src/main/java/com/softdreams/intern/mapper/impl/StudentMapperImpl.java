@@ -3,14 +3,19 @@ package com.softdreams.intern.mapper.impl;
 import com.softdreams.intern.dto.request.CreateStudentRequest;
 import com.softdreams.intern.dto.response.StudentResponse;
 import com.softdreams.intern.entity.Student;
+import com.softdreams.intern.mapper.AccountMapper;
 import com.softdreams.intern.mapper.StudentMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class StudentMapperImpl implements StudentMapper {
+    final AccountMapper accountMapper;
+
     @Override
     public Student toStudent(CreateStudentRequest request) {
         if (request == null)
@@ -42,6 +47,9 @@ public class StudentMapperImpl implements StudentMapper {
         response.setDateOfBirth( student.getDateOfBirth() );
         response.setClassroom( student.getClassroom() );
         response.setCohort( student.getCohort() );
+        if (student.getAccount() != null) {
+            response.setAccount(accountMapper.toResponse(student.getAccount()));
+        }
 
         return response;
 

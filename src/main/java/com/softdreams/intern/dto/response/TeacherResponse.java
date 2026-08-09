@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TeacherResponse {
-
     Long id;
 
     String code;
@@ -23,4 +22,6 @@ public class TeacherResponse {
     LocalDate dateOfBirth;
 
     String department;
+
+    AccountResponse account;
 }

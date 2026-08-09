@@ -14,4 +14,6 @@ public interface StudentService {
     public StudentResponse getStudentById(Long id);
 
     public List<SubjectResposne> getSubjectsByStudentId(Long id);
+
+    public StudentResponse createAccount(String code, String password, String roleCode);
 }

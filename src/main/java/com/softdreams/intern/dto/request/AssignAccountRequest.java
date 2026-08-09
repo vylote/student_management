@@ -7,10 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateAccountRequest {
-
-    String userName;
-
+public class AssignAccountRequest {
     @StrongPassword
     String password;
 }

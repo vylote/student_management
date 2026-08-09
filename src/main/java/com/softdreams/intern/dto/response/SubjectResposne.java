@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SubjectResposne {
-
     Long id;
 
     String code;

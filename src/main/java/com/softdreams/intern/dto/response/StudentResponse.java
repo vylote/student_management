@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StudentResponse {
-
     Long id;
 
     String code;
@@ -25,4 +24,6 @@ public class StudentResponse {
     String classroom;
 
     String cohort;
+
+    AccountResponse account;
 }

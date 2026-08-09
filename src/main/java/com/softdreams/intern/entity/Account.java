@@ -19,7 +19,7 @@ public class Account {
     Long id;
 
     @Column(unique = true, nullable = false)
-    String userName;
+    String username;
 
     @Column(nullable = false)
     String password;

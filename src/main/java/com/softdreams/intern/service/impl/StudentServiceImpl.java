@@ -15,6 +15,7 @@ import com.softdreams.intern.service.AccountService;
 import com.softdreams.intern.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,12 +43,14 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.toResponse(studentRepository.save(student));
     }
 
+    @Transactional
     @Override
     public List<StudentResponse> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         return studentMapper.toResponseList(students);
     }
 
+    @Transactional
     @Override
     public StudentResponse getStudentById(Long id) {
         Student student = studentRepository.findById(id)

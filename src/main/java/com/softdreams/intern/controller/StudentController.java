@@ -5,7 +5,6 @@ import com.softdreams.intern.dto.request.CreateStudentRequest;
 import com.softdreams.intern.dto.response.ApiResponse;
 import com.softdreams.intern.dto.response.StudentResponse;
 import com.softdreams.intern.dto.response.SubjectResposne;
-import com.softdreams.intern.entity.Student;
 import com.softdreams.intern.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +46,7 @@ public class StudentController {
                 .build();
     }
 
-    @PatchMapping("/{code}/account")
+    @PatchMapping("/{code}/register")
     public ApiResponse<StudentResponse> createAccount(
             @PathVariable("code") String code,
             @RequestBody @Valid AssignAccountRequest request) {

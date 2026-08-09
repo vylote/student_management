@@ -20,7 +20,7 @@ public class TeacherController {
         return teacherService.addTeacher(request);
     }
 
-    @PatchMapping("/{code}/account")
+    @PatchMapping("/{code}/register")
     public ApiResponse<TeacherResponse> createAccount(
             @PathVariable("code") String code,
             @RequestBody @Valid AssignAccountRequest request) {

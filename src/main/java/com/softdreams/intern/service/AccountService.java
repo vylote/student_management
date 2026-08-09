@@ -1,5 +1,7 @@
 package com.softdreams.intern.service;
 
+import com.softdreams.intern.dto.request.LoginRequest;
+import com.softdreams.intern.dto.response.TokenResponse;
 import com.softdreams.intern.entity.HasAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +12,6 @@ public interface AccountService {
             JpaRepository<T, Long> repository,
             String password,
             String roleCode);
+
+    public TokenResponse login(LoginRequest request);
 }

@@ -41,6 +41,5 @@ public class Teacher implements HasAccount{
     Account account;
 
     @ManyToMany(mappedBy = "teachers", fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
     List<Subject> subjects;
 }

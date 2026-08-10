@@ -3,6 +3,7 @@ package com.softdreams.intern.controller;
 import com.softdreams.intern.dto.request.AssignAccountRequest;
 import com.softdreams.intern.dto.request.CreateStudentRequest;
 import com.softdreams.intern.dto.response.ApiResponse;
+import com.softdreams.intern.dto.response.PageResponse;
 import com.softdreams.intern.dto.response.StudentResponse;
 import com.softdreams.intern.dto.response.SubjectResposne;
 import com.softdreams.intern.service.StudentService;
@@ -52,6 +53,21 @@ public class StudentController {
             @RequestBody @Valid AssignAccountRequest request) {
         return ApiResponse.<StudentResponse>builder()
                 .data(studentService.createAccount(code, request.getPassword(), "ROLE_STUDENT"))
+                .build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<PageResponse<StudentResponse>> searchStudents(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String code,
+            @RequestParam(required = false) String cohort,
+            @RequestParam(required = false) String classroom,
+            @RequestParam(required = false) Boolean hasAccount,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ApiResponse.<PageResponse<StudentResponse>>builder()
+                .data(studentService.searchStudents(name, code, cohort, classroom, hasAccount, page, size))
                 .build();
     }
 }

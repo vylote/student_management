@@ -11,6 +11,7 @@ import com.softdreams.intern.exception.AppException;
 import com.softdreams.intern.exception.ErrorCode;
 import com.softdreams.intern.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -19,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
@@ -48,6 +50,7 @@ public class JwtServiceImpl implements JwtService {
         }
     }
 
+    @Override
     public SignedJWT verifyToken(String token) {
         try {
             JWSVerifier verifier = new MACVerifier(jwtProperties.getSignerKey().getBytes());

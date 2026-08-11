@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccountService {
 
-    public <T extends HasAccount> T createAccount(
+    <T extends HasAccount> T createAccount(
             T entity,
             JpaRepository<T, Long> repository,
             String password,
             String roleCode);
 
-    public TokenResponse login(LoginRequest request);
+    TokenResponse login(LoginRequest request);
 }

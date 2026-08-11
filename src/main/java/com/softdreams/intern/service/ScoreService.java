@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface ScoreService {
 
-    public ScoreResponse createScore(CreateScoreRequest request);
+    ScoreResponse createScore(CreateScoreRequest request);
 
-    public ScoreResponse updateScore(UpdateScoreRequest request);
+    ScoreResponse updateScore(UpdateScoreRequest request);
 
-    public void calculateAndSetFinalScore(Score score, Subject subject);
+    void calculateAndSetFinalScore(Score score, Subject subject);
 
-    public List<ScoreResponse> getAllScoresByStudentId(Long studentId);
+    List<ScoreResponse> getAllScoresByStudentId(Long studentId);
 }

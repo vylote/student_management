@@ -8,15 +8,15 @@ import com.softdreams.intern.dto.response.SubjectResposne;
 import java.util.List;
 
 public interface StudentService {
-    public StudentResponse addStudent(CreateStudentRequest request);
+    StudentResponse addStudent(CreateStudentRequest request);
 
-    public List<StudentResponse> getAllStudents();
+    List<StudentResponse> getAllStudents();
 
-    public StudentResponse getStudentById(Long id);
+    StudentResponse getStudentById(Long id);
 
-    public List<SubjectResposne> getSubjectsByStudentId(Long id);
+    List<SubjectResposne> getSubjectsByStudentId(Long id);
 
-    public StudentResponse createAccount(String code, String password, String roleCode);
+    StudentResponse createAccount(String code, String password, String roleCode);
 
     PageResponse<StudentResponse> searchStudents(
             String name,

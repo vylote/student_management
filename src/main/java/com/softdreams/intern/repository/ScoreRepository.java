@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ScoreRepository extends JpaRepository<Score, Long> {
@@ -14,7 +15,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     boolean existsByStudentIdAndSubjectId(Long studentId, Long subjectId);
 
     @Query("SELECT s.subject FROM Score s WHERE s.student.id = :studentId")
-    List<Subject> findSubjectsByStudentId(Long studentId);
+    Optional<List<Subject>> findSubjectsByStudentId(Long studentId);
 
-    List<Score> findByStudentId(Long studentId);
+    Optional<List<Score>> findByStudentId(Long studentId);
 }

@@ -1,0 +1,1 @@
+INSERT INTO accounts (password, username, role_id) VALUES ('$2a$12$nX.Ubdlv/ag9ZW2usMKw6uBU0HkTJ4l8CCnzwIKbNX/jyW6WUduY2', 'admin', 3)

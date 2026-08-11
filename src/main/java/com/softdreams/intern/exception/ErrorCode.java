@@ -33,6 +33,7 @@ public enum ErrorCode {
 
     USERNAME_ALREADY_EXISTS("1012", "Tên đăng nhập đã tồn tại", HttpStatus.CONFLICT),
     ROLE_NOT_EXISTS("1013", "Vai trò không tồn tại", HttpStatus.NOT_FOUND),
+    PERMISSION_NOT_FOUND("1016", "Không tìm thấy quyền nào", HttpStatus.NOT_FOUND),
 
     UNAUTHENTICATED("1015", "Unauthenticated", HttpStatus.UNAUTHORIZED),
     ;

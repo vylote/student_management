@@ -67,7 +67,8 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public List<ScoreResponse> getAllScoresByStudentId(Long studentId) {
-        List<Score> scores = scoreRepository.findByStudentId(studentId); // Cần định nghĩa hàm này trong ScoreRepository
+        List<Score> scores = scoreRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new AppException(ErrorCode.SCORE_NOT_FOUND));
         return scoreMapper.toResponseList(scores);
     }
 }

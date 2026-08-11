@@ -9,6 +9,7 @@ import com.softdreams.intern.dto.response.SubjectResposne;
 import com.softdreams.intern.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 public class StudentController {
     final StudentService studentService;
 
+    @PreAuthorize("hasAuthority('student:write')")
     @PostMapping
     public ApiResponse<StudentResponse> addStudent(@RequestBody CreateStudentRequest request) {
         return ApiResponse.<StudentResponse>builder()

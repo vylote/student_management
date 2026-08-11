@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,7 @@ public class StudentServiceImpl implements StudentService {
 
     final AccountService accountService;
 
+    @PreAuthorize("hasRole('PRINCIPAL')")
     @Override
     public StudentResponse addStudent(CreateStudentRequest request) {
         if (studentRepository.existsByCode(request.getCode())) {
@@ -71,10 +73,8 @@ public class StudentServiceImpl implements StudentService {
             throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
         }
 
-        List<Subject> subjects = scoreRepository.findSubjectsByStudentId(studentId);
-        if (subjects.isEmpty()) {
-            throw new AppException(ErrorCode.SUBJECT_NOT_FOUND);
-        }
+        List<Subject> subjects = scoreRepository.findSubjectsByStudentId(studentId)
+                .orElseThrow(() -> new AppException(ErrorCode.SUBJECT_NOT_FOUND));
 
         return subjectMapper.toResponses(subjects);
     }

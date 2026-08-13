@@ -2,10 +2,13 @@ package com.softdreams.intern.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 
+@Slf4j
 public class AgeValidator implements ConstraintValidator<ValidAge, LocalDate> {
     private int minAge;
 
@@ -19,7 +22,9 @@ public class AgeValidator implements ConstraintValidator<ValidAge, LocalDate> {
         if (dateOfBirth == null)
             return true;
 
-        int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
+        int age = Period.between(dateOfBirth, LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).getYears();
+        log.error("{} years old", age);
+
         return age >= minAge;
     }
 }

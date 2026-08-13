@@ -24,7 +24,7 @@ public class CreateTeacherRequest {
     String gender;
 
     @NotNull(message = "Ngày sinh không được để trống")
-    @ValidAge(min = 22, message = "Giảng viên phải từ 22 tuổi trở lên")
+    @ValidAge(min = 22, message = "Phải đủ {min} tuổi trở lên")
     LocalDate dateOfBirth;
 
     @NotBlank(message = "Phòng ban/Khoa không được để trống")

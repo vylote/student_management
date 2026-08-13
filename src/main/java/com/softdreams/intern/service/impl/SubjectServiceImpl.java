@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
 
-    final SubjectRepository subjectRepository;
+    private final SubjectRepository subjectRepository;
 
     final SubjectMapper subjectMapper;
 

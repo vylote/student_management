@@ -31,11 +31,13 @@ public class JwtServiceImpl implements JwtService {
         try {
             JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
+            Instant now = Instant.now();
+
             JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                     .subject(account.getUsername())
                     .issuer("school_management")
-                    .issueTime(new Date())
-                    .expirationTime(new Date(Instant.now().plus(24, ChronoUnit.HOURS).toEpochMilli()))
+                    .issueTime(Date.from(now))
+                    .expirationTime(Date.from(now.plus(24, ChronoUnit.HOURS)))
                     .jwtID(UUID.randomUUID().toString())
                     .claim("role", account.getRole().getCode())
                     .claim("id", account.getId())

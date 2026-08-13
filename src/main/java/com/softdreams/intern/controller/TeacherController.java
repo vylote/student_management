@@ -7,6 +7,7 @@ import com.softdreams.intern.dto.response.TeacherResponse;
 import com.softdreams.intern.service.TeacherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class TeacherController {
     final TeacherService teacherService;
 
+    @PreAuthorize("hasAuthority('teacher:write')")
     @PostMapping
-    public TeacherResponse addTeacher(@RequestBody CreateTeacherRequest request) {
+    public TeacherResponse addTeacher(@Valid @RequestBody CreateTeacherRequest request) {
         return teacherService.addTeacher(request);
     }
 
+    @PreAuthorize("hasAuthority('account:write')")
     @PatchMapping("/{code}/register")
     public ApiResponse<TeacherResponse> createAccount(
             @PathVariable("code") String code,

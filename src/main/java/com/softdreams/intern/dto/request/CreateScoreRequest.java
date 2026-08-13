@@ -10,13 +10,15 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateScoreRequest {
+    @NotNull
     @DecimalMin(value = "0.0", message = "Điểm quá trình không được nhỏ hơn 0")
     @DecimalMax(value = "10.0", message = "Điểm quá trình không được lớn hơn 10")
-    double processScore;
+    Double processScore;
 
+    @NotNull
     @DecimalMin(value = "0.0", message = "Điểm thành phần không được nhỏ hơn 0")
     @DecimalMax(value = "10.0", message = "Điểm thành phần không được lớn hơn 10")
-    double componentScore;
+    Double componentScore;
 
     @NotNull(message = "ID Sinh viên không được để trống")
     Long studentId;

@@ -24,7 +24,7 @@ public class CreateStudentRequest {
     String gender;
 
     @NotNull(message = "Ngày sinh không được để trống")
-    @ValidAge(min = 18, message = "Sinh viên phải từ 18 tuổi trở lên")
+    @ValidAge(message = "Phải đủ {min} tuổi trở lên")
     LocalDate dateOfBirth;
 
     @NotBlank(message = "Lớp học không được để trống")
@@ -32,5 +32,4 @@ public class CreateStudentRequest {
 
     @NotBlank(message = "Khóa học không được để trống")
     String cohort;
-
 }

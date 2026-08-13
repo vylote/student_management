@@ -25,5 +25,5 @@ public class StudentResponse {
 
     String cohort;
 
-    AccountResponse account;
+    Long accountId;
 }

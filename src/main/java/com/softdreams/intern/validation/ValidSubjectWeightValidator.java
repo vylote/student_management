@@ -10,7 +10,11 @@ public class ValidSubjectWeightValidator implements ConstraintValidator<ValidSub
     @Override
     public boolean isValid(CreateSubjectRequest request, ConstraintValidatorContext constraintValidatorContext) {
         if (request == null)
-            return true; //@NotNull xử lí riêng
+            return true;
+
+//        if (request.getProcessWeight() == null || request.getComponentWeight() == null) {
+//            return true; // Trả về true để nhường quyền bắt lỗi cho các annotation @NotNull xử lý
+//        }
 
         double total = request.getProcessWeight() + request.getComponentWeight();
         return Math.abs(total - 1.0) < EPSILON;

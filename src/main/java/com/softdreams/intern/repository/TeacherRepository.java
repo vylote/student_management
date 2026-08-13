@@ -11,4 +11,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     boolean existsByCode(String code);
 
     Optional<Teacher> findByCode(String code);
+
+    Optional<Teacher> findByAccountId(long accountId);
 }

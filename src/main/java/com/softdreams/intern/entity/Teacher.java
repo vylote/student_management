@@ -40,6 +40,6 @@ public class Teacher implements HasAccount{
     @JoinColumn(name = "account_id", unique = true)
     Account account;
 
-    @ManyToMany(mappedBy = "teachers", fetch = FetchType.LAZY)
-    List<Subject> subjects;
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    List<Score> scores;
 }

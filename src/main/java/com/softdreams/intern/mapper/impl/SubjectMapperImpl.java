@@ -7,6 +7,7 @@ import com.softdreams.intern.mapper.SubjectMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -49,7 +50,7 @@ public class SubjectMapperImpl implements SubjectMapper {
     @Override
     public List<SubjectResposne> toResponses(List<Subject> subjects) {
         if ( subjects == null ) {
-            return null;
+            return Collections.emptyList();
         }
 
         List<SubjectResposne> list = new ArrayList<SubjectResposne>( subjects.size() );

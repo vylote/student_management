@@ -27,22 +27,14 @@ public class Subject {
     String name;
 
     @Column(nullable = false)
-    int totalLesson;
+    Integer totalLesson;
 
     @Column(nullable = false)
-    double processWeight;
+    Double processWeight;
 
     @Column(nullable = false)
-    double componentWeight;
+    Double componentWeight;
 
-    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Score> scores;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "teacher_subjects",
-            joinColumns = @JoinColumn(name = "subject_id"),
-            inverseJoinColumns = @JoinColumn(name = "teacher_id")
-    )
-    List<Teacher> teachers;
 }

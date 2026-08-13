@@ -2,10 +2,9 @@ package com.softdreams.intern.controller;
 
 import com.softdreams.intern.dto.request.AssignAccountRequest;
 import com.softdreams.intern.dto.request.CreateStudentRequest;
-import com.softdreams.intern.dto.response.ApiResponse;
-import com.softdreams.intern.dto.response.PageResponse;
-import com.softdreams.intern.dto.response.StudentResponse;
-import com.softdreams.intern.dto.response.SubjectResposne;
+import com.softdreams.intern.dto.request.RegisterSubjectRequest;
+import com.softdreams.intern.dto.request.StudentSearchRequest;
+import com.softdreams.intern.dto.response.*;
 import com.softdreams.intern.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +21,13 @@ public class StudentController {
 
     @PreAuthorize("hasAuthority('student:write')")
     @PostMapping
-    public ApiResponse<StudentResponse> addStudent(@RequestBody CreateStudentRequest request) {
+    public ApiResponse<StudentResponse> addStudent(@Valid @RequestBody CreateStudentRequest request) {
         return ApiResponse.<StudentResponse>builder()
                 .data(studentService.addStudent(request))
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('student:read')")
     @GetMapping
     public ApiResponse<List<StudentResponse>> getAllStudents() {
         return ApiResponse.<List<StudentResponse>>builder()
@@ -35,6 +35,7 @@ public class StudentController {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('student:read')")
     @GetMapping("/{id}")
     public ApiResponse<StudentResponse> getStudentById(@PathVariable Long id) {
         return ApiResponse.<StudentResponse>builder()
@@ -42,13 +43,15 @@ public class StudentController {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('subject:read')")
     @GetMapping("/{studentId}/subjects")
-    public ApiResponse<List<SubjectResposne>> getAllSubjectsByStudentId(@PathVariable Long studentId) {
+    public ApiResponse<List<SubjectResposne>> getSubjectsByStudentId(@PathVariable Long studentId) {
         return ApiResponse.<List<SubjectResposne>>builder()
                 .data(studentService.getSubjectsByStudentId(studentId))
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('account:write')")
     @PatchMapping("/{code}/register")
     public ApiResponse<StudentResponse> createAccount(
             @PathVariable("code") String code,
@@ -58,18 +61,21 @@ public class StudentController {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('student:read')")
     @GetMapping("/search")
     public ApiResponse<PageResponse<StudentResponse>> searchStudents(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String code,
-            @RequestParam(required = false) String cohort,
-            @RequestParam(required = false) String classroom,
-            @RequestParam(required = false) Boolean hasAccount,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+            StudentSearchRequest request
     ) {
         return ApiResponse.<PageResponse<StudentResponse>>builder()
-                .data(studentService.searchStudents(name, code, cohort, classroom, hasAccount, page, size))
+                .data(studentService.searchStudents(request))
+                .build();
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/subject/register")
+    public ApiResponse<RegisterSubjectResponse> registerSubject(@Valid @RequestBody RegisterSubjectRequest request) {
+        return ApiResponse.<RegisterSubjectResponse>builder()
+                .data(studentService.registerSubject(request))
                 .build();
     }
 }

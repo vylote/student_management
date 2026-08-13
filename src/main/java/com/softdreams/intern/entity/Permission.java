@@ -20,4 +20,7 @@ public class Permission {
 
     @Column(unique = true, nullable = false)
     String code;
+
+    @Column(nullable = false)
+    String name;
 }

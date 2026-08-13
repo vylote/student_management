@@ -45,7 +45,7 @@ public class TeacherMapperImpl implements TeacherMapper {
         teacherResponse.setDateOfBirth( teacher.getDateOfBirth() );
         teacherResponse.setDepartment( teacher.getDepartment() );
         if (teacher.getAccount() != null) {
-            teacherResponse.setAccount(accountMapper.toResponse(teacher.getAccount()));
+            teacherResponse.setAccountId(teacher.getAccount().getId() );
         }
 
         return teacherResponse;

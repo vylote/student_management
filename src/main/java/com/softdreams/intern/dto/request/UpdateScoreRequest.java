@@ -10,8 +10,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateScoreRequest {
-    @NotNull(message = "ID Bảng điểm không được để trống")
-    Long id;
 
     @DecimalMin(value = "0.0", message = "Điểm quá trình không được nhỏ hơn 0")
     @DecimalMax(value = "10.0", message = "Điểm quá trình không được lớn hơn 10")

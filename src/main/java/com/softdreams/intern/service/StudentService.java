@@ -1,7 +1,10 @@
 package com.softdreams.intern.service;
 
 import com.softdreams.intern.dto.request.CreateStudentRequest;
+import com.softdreams.intern.dto.request.RegisterSubjectRequest;
+import com.softdreams.intern.dto.request.StudentSearchRequest;
 import com.softdreams.intern.dto.response.PageResponse;
+import com.softdreams.intern.dto.response.RegisterSubjectResponse;
 import com.softdreams.intern.dto.response.StudentResponse;
 import com.softdreams.intern.dto.response.SubjectResposne;
 
@@ -18,13 +21,7 @@ public interface StudentService {
 
     StudentResponse createAccount(String code, String password, String roleCode);
 
-    PageResponse<StudentResponse> searchStudents(
-            String name,
-            String code,
-            String cohort,
-            String classroom,
-            Boolean hasAccount,
-            int page,
-            int size
-    );
+    PageResponse<StudentResponse> searchStudents(StudentSearchRequest request);
+
+    RegisterSubjectResponse registerSubject(RegisterSubjectRequest request);
 }

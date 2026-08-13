@@ -10,6 +10,7 @@ import com.softdreams.intern.dto.response.SubjectResposne;
 import com.softdreams.intern.entity.Score;
 import com.softdreams.intern.entity.Student;
 import com.softdreams.intern.entity.Subject;
+import com.softdreams.intern.entity.TeachingAssignment;
 import com.softdreams.intern.exception.AppException;
 import com.softdreams.intern.exception.ErrorCode;
 import com.softdreams.intern.mapper.StudentMapper;
@@ -17,10 +18,13 @@ import com.softdreams.intern.mapper.SubjectMapper;
 import com.softdreams.intern.repository.ScoreRepository;
 import com.softdreams.intern.repository.StudentRepository;
 import com.softdreams.intern.repository.SubjectRepository;
+import com.softdreams.intern.repository.TeachingAssigmentRepository;
 import com.softdreams.intern.service.AccountService;
 import com.softdreams.intern.service.StudentService;
 import com.softdreams.intern.specification.StudentSpecification;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +38,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StudentServiceImpl implements StudentService {
 
     final StudentRepository studentRepository;
@@ -43,6 +48,8 @@ public class StudentServiceImpl implements StudentService {
     final ScoreRepository scoreRepository;
 
     final SubjectRepository subjectRepository;
+
+    final TeachingAssigmentRepository teachingAssigmentRepository;
 
     final SubjectMapper subjectMapper;
 
@@ -129,9 +136,16 @@ public class StudentServiceImpl implements StudentService {
             throw new AppException(ErrorCode.SUBJECT_ALREADY_REGISTERED);
         }
 
+        TeachingAssignment assignment = teachingAssigmentRepository
+                .findBySubjectIdAndClassroom(subject.getId(), student.getClassroom())
+                .orElseThrow(() -> new AppException(ErrorCode.NO_TEACHER_ASSIGNED));
+
         Score score = new Score();
         score.setStudent(student);
         score.setSubject(subject);
+        score.setClassroom(student.getClassroom());
+        score.setTeacher(assignment.getTeacher());
+
         scoreRepository.save(score);
 
         RegisterSubjectResponse response = new RegisterSubjectResponse();

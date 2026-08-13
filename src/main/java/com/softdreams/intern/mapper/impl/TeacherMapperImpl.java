@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class TeacherMapperImpl implements TeacherMapper {
-    final AccountMapper accountMapper;
+    private final AccountMapper accountMapper;
 
     @Override
     public Teacher toTeacher(CreateTeacherRequest request) {

@@ -1,26 +1,24 @@
 package com.softdreams.intern.service.impl;
 
 import com.softdreams.intern.dto.request.CreateTeacherRequest;
-import com.softdreams.intern.dto.request.RegisterSubjectRequest;
-import com.softdreams.intern.dto.response.RegisterSubjectResponse;
+import com.softdreams.intern.dto.request.TeachingAssignmentRequest;
 import com.softdreams.intern.dto.response.TeacherResponse;
-import com.softdreams.intern.entity.Score;
+import com.softdreams.intern.dto.response.TeachingAssignmentResponse;
 import com.softdreams.intern.entity.Subject;
 import com.softdreams.intern.entity.Teacher;
+import com.softdreams.intern.entity.TeachingAssignment;
 import com.softdreams.intern.exception.AppException;
 import com.softdreams.intern.exception.ErrorCode;
-import com.softdreams.intern.mapper.SubjectMapper;
 import com.softdreams.intern.mapper.TeacherMapper;
-import com.softdreams.intern.repository.ScoreRepository;
+import com.softdreams.intern.mapper.TeachingAssignmentMapper;
 import com.softdreams.intern.repository.SubjectRepository;
 import com.softdreams.intern.repository.TeacherRepository;
+import com.softdreams.intern.repository.TeachingAssigmentRepository;
 import com.softdreams.intern.service.AccountService;
 import com.softdreams.intern.service.TeacherService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +28,13 @@ public class TeacherServiceImpl implements TeacherService {
 
     final SubjectRepository subjectRepository;
 
-    final ScoreRepository scoreRepository;
-
     final AccountService accountService;
 
     final TeacherMapper teacherMapper;
 
-    final SubjectMapper subjectMapper;
+    final TeachingAssigmentRepository teachingAssigmentRepository;
+
+    final TeachingAssignmentMapper teachingAssignmentMapper;
 
     @Override
     public TeacherResponse addTeacher(CreateTeacherRequest request) {
@@ -57,29 +55,25 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherMapper.toResponse(saved);
     }
 
+    @Transactional
     @Override
-    public RegisterSubjectResponse registerSubject(RegisterSubjectRequest request) {
-        Long accountId = (Long) Objects.requireNonNull(SecurityContextHolder.getContext()
-                        .getAuthentication())
-                .getPrincipal();
-
-        Teacher teacher = teacherRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new AppException(ErrorCode.TEACHER_NOT_FOUND));
-
+    public TeachingAssignmentResponse teachingAssign(TeachingAssignmentRequest request) {
         Subject subject = subjectRepository.findById(request.getSubjectId())
                 .orElseThrow(() -> new AppException(ErrorCode.SUBJECT_NOT_FOUND));
 
-        if (scoreRepository.existsByTeacherIdAndSubjectId(teacher.getId(), subject.getId())) {
-            throw new AppException(ErrorCode.SUBJECT_ALREADY_REGISTERED);
+        Teacher teacher = teacherRepository.findById(request.getTeacherId())
+                .orElseThrow(() -> new AppException(ErrorCode.TEACHER_NOT_FOUND));
+
+        if (teachingAssigmentRepository.existsBySubjectIdAndClassroom(request.getSubjectId(), request.getClassroom())) {
+            throw new AppException(ErrorCode.SUBJECT_ALREADY_ASSIGNED);
         }
 
-        Score score = new Score();
-        score.setTeacher(teacher);
-        score.setSubject(subject);
-        scoreRepository.save(score);
+        TeachingAssignment assignment = new TeachingAssignment();
+        assignment.setTeacher(teacher);
+        assignment.setSubject(subject);
+        assignment.setClassroom(request.getClassroom());
+        teachingAssigmentRepository.save(assignment);
 
-        RegisterSubjectResponse response = new RegisterSubjectResponse();
-        response.setSubject(subjectMapper.toResponse(subject));
-        return response;
+        return teachingAssignmentMapper.toResponse(assignment);
     }
 }

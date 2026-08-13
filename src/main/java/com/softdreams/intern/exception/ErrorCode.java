@@ -23,6 +23,8 @@ public enum ErrorCode {
     STUDENT_NOT_FOUND("1005", "Không tìm thấy sinh viên", HttpStatus.NOT_FOUND),
     SUBJECT_NOT_FOUND("1006", "Không tìm thấy môn học", HttpStatus.NOT_FOUND),
     SUBJECT_ALREADY_REGISTERED("1017", "Môn hoc được được đăng kí", HttpStatus.CONFLICT),
+    SUBJECT_ALREADY_ASSIGNED("1018", "Môn học đã được gán cho giảng viên", HttpStatus.CONFLICT),
+    NO_TEACHER_ASSIGNED("1019", "Chưa có giảng viên phụ trách môn học này ở lớp của bạn", HttpStatus.BAD_REQUEST),
 
     INVALID_SUBJECT_WEIGHT("1007", "Tổng trọng số điểm phải là 1", HttpStatus.BAD_REQUEST),
 

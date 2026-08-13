@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AccountMapperImpl implements AccountMapper {
-    final RoleMapper roleMapper;
+    private final RoleMapper roleMapper;
 
     @Override
     public AccountResponse toResponse(Account account) {

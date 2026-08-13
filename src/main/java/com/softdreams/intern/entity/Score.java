@@ -24,6 +24,9 @@ public class Score {
     Long id;
 
     @Column(nullable = false)
+    String classroom;
+
+    @Column(nullable = false)
     @Builder.Default
     Double processScore = 0.0;
 

@@ -1,0 +1,91 @@
+<div class="page-head">
+  <div>
+    <p class="page-head__eyebrow">Hiệu trưởng</p>
+    <h1>Phân công Giảng dạy &amp; Môn học</h1>
+  </div>
+</div>
+
+<div class="two-col">
+  <section class="card table-card">
+    <h3 class="section-title">Danh sách môn học</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Môn học</th>
+          <th>Số tiết</th>
+          <th>Tỷ lệ điểm</th>
+          <th>Giảng viên phụ trách</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (subject of academic.subjects(); track subject.id) {
+          <tr>
+            <td class="table__name">{{ subject.name }}</td>
+            <td>{{ subject.totalSessions }} tiết</td>
+            <td class="mono">{{ subject.processWeight }}% - {{ subject.componentWeight }}%</td>
+            <td>
+              @if (subject.assignedTeacherName) {
+                <span class="badge badge-pass">{{ subject.assignedTeacherName }}</span>
+              } @else {
+                <span class="badge badge-fail">Chưa phân công</span>
+              }
+            </td>
+            <td>
+              <button class="btn btn-ghost" (click)="openAssign(subject)">Phân công</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card table-card">
+    <h3 class="section-title">Danh sách giảng viên</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Giảng viên</th>
+          <th>Email</th>
+          <th>Số môn phụ trách</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (teacher of academic.teachers(); track teacher.id) {
+          <tr>
+            <td class="table__name">{{ teacher.fullName }}</td>
+            <td class="mono">{{ teacher.email }}</td>
+            <td><span class="badge badge-count">{{ teacher.subjectIds.length }} môn</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>
+
+@if (assigningSubject(); as subject) {
+  <div class="drawer-overlay" (click)="closeAssign()">
+    <aside class="drawer assign-modal" (click)="$event.stopPropagation()">
+      <button class="drawer__close" (click)="closeAssign()" aria-label="Đóng">✕</button>
+      <h2 class="assign-modal__title">Phân công giảng dạy</h2>
+      <p class="assign-modal__subject">Môn học: <strong>{{ subject.name }}</strong></p>
+
+      <label class="field">
+        <span>Chọn giảng viên phụ trách</span>
+        <select class="input" [(ngModel)]="pendingTeacherId">
+          <option [ngValue]="null" disabled>-- Chọn giảng viên --</option>
+          @for (teacher of academic.teachers(); track teacher.id) {
+            <option [ngValue]="teacher.id">{{ teacher.fullName }}</option>
+          }
+        </select>
+      </label>
+
+      <div class="assign-modal__actions">
+        <button class="btn btn-ghost" (click)="closeAssign()">Hủy</button>
+        <button class="btn btn-primary" [disabled]="!pendingTeacherId() || saving()" (click)="confirmAssign()">
+          {{ saving() ? 'Đang lưu…' : 'Xác nhận phân công' }}
+        </button>
+      </div>
+    </aside>
+  </div>
+}

@@ -1,0 +1,52 @@
+<div class="login-card card">
+  <div class="login-card__brand">
+    <span class="login-card__seal">HS</span>
+    <div>
+      <h1>Hệ thống Quản lý Học vụ</h1>
+      <p>Đăng nhập để tiếp tục</p>
+    </div>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="login-card__form">
+    <label class="field">
+      <span>Tài khoản</span>
+      <input
+        class="input"
+        type="text"
+        name="username"
+        [(ngModel)]="username"
+        placeholder="vd: hieutruong"
+        autocomplete="username"
+      />
+    </label>
+
+    <label class="field">
+      <span>Mật khẩu</span>
+      <input
+        class="input"
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="••••••••"
+        autocomplete="current-password"
+      />
+    </label>
+
+    @if (errorMessage()) {
+      <p class="login-card__error">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" class="btn btn-gold login-card__submit" [disabled]="loading()">
+      {{ loading() ? 'Đang đăng nhập…' : 'Đăng nhập' }}
+    </button>
+  </form>
+
+  <div class="login-card__demo">
+    <p>Tài khoản demo (mock, mật khẩu: 123456)</p>
+    <div class="login-card__demo-list">
+      <button type="button" class="btn btn-ghost" (click)="fillDemo('hieutruong', '123456')">Hiệu trưởng</button>
+      <button type="button" class="btn btn-ghost" (click)="fillDemo('giangvien', '123456')">Giảng viên</button>
+      <button type="button" class="btn btn-ghost" (click)="fillDemo('sinhvien', '123456')">Sinh viên</button>
+    </div>
+  </div>
+</div>

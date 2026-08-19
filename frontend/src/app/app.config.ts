@@ -1,13 +1,13 @@
-import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
-import { apiInterceptor } from './core/interceptors/api.interceptor';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
+  // withComponentInputBinding(): cho phép Angular tự bind tham số route (vd :classId)
+  // thẳng vào @Input() của Component, không cần ActivatedRoute thủ công (Trang 5)
   providers: [
-    provideRouter(routes),
-    provideHttpClient(withInterceptors([apiInterceptor]))  // <-- thêm dòng này
-  ]
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes, withComponentInputBinding()),
+  ],
 };

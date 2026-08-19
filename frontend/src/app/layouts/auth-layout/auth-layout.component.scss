@@ -1,0 +1,16 @@
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(201, 154, 62, 0.14), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(38, 52, 87, 0.25), transparent 50%),
+    var(--navy-950);
+  padding: 24px;
+
+  &__panel {
+    width: 100%;
+    max-width: 420px;
+  }
+}

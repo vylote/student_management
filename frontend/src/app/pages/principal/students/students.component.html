@@ -1,0 +1,90 @@
+<div class="page-head">
+  <div>
+    <p class="page-head__eyebrow">Hiệu trưởng</p>
+    <h1>Quản lý Sinh viên</h1>
+  </div>
+  <span class="page-head__count">{{ studentService.students().length }} sinh viên</span>
+</div>
+
+<div class="card table-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Mã SV</th>
+        <th>Họ tên</th>
+        <th>Lớp</th>
+        <th>Khóa</th>
+        <th>Số môn đăng ký</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (student of studentService.students(); track student.id) {
+        <tr (click)="openDetail(student)" class="table__row">
+          <td class="mono">{{ student.studentCode }}</td>
+          <td class="table__name">
+            <img [src]="student.avatarUrl" [alt]="student.fullName" class="table__avatar" />
+            {{ student.fullName }}
+          </td>
+          <td>{{ student.className }}</td>
+          <td>{{ student.cohort }}</td>
+          <td><span class="badge badge-count">{{ student.registeredSubjectsCount }} môn</span></td>
+        </tr>
+      } @empty {
+        <tr><td colspan="5" class="table__empty">Chưa có dữ liệu sinh viên.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Detail Drawer -->
+@if (selectedStudent(); as s) {
+  <div class="drawer-overlay" (click)="closeDetail()">
+    <aside class="drawer" (click)="$event.stopPropagation()">
+      <button class="drawer__close" (click)="closeDetail()" aria-label="Đóng">✕</button>
+
+      <div class="drawer__profile">
+        <img [src]="s.avatarUrl" [alt]="s.fullName" class="drawer__avatar" />
+        <h2>{{ s.fullName }}</h2>
+        <p class="mono">{{ s.studentCode }} · {{ s.className }} · {{ s.cohort }}</p>
+      </div>
+
+      <dl class="drawer__facts">
+        <div><dt>Ngày sinh</dt><dd>{{ s.dateOfBirth }}</dd></div>
+        <div><dt>Giới tính</dt><dd>{{ s.gender }}</dd></div>
+        <div><dt>Email</dt><dd>{{ s.email }}</dd></div>
+      </dl>
+
+      <h3 class="drawer__subheading">Môn đã đăng ký &amp; điểm số</h3>
+      <table class="table table--compact">
+        <thead>
+          <tr>
+            <th>Môn học</th>
+            <th>Quá trình</th>
+            <th>Thành phần</th>
+            <th>Tổng kết</th>
+            <th>Kết quả</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sub of s.enrolledSubjects; track sub.subjectId) {
+            <tr>
+              <td>{{ sub.subjectName }}</td>
+              <td>{{ sub.processScore ?? '—' }}</td>
+              <td>{{ sub.componentScore ?? '—' }}</td>
+              <td>{{ sub.finalScore ?? '—' }}</td>
+              <td>
+                @if (sub.finalScore !== null) {
+                  <span class="badge" [class.badge-pass]="sub.finalScore >= 4" [class.badge-fail]="sub.finalScore < 4">
+                    {{ sub.finalScore >= 4 ? 'Đỗ' : 'Trượt' }}
+                  </span>
+                } @else {
+                  <span class="badge badge-count">Chưa có</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </aside>
+  </div>
+}

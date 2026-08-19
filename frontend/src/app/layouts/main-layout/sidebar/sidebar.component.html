@@ -1,0 +1,29 @@
+<aside class="sidebar">
+  <nav class="sidebar__nav">
+    @switch (auth.role()) {
+      @case ('ROLE_PRINCIPAL') {
+        <a routerLink="/principal/students" routerLinkActive="is-active" class="sidebar__item">
+          <span class="sidebar__icon">🎓</span><span class="sidebar__label">Quản lý Sinh viên</span>
+        </a>
+        <a routerLink="/principal/subjects-teachers" routerLinkActive="is-active" class="sidebar__item">
+          <span class="sidebar__icon">📚</span><span class="sidebar__label">Môn học &amp; Giảng viên</span>
+        </a>
+      }
+      @case ('ROLE_TEACHER') {
+        <a routerLink="/teacher/classes" routerLinkActive="is-active" class="sidebar__item">
+          <span class="sidebar__icon">🏫</span><span class="sidebar__label">Lớp đang dạy</span>
+        </a>
+      }
+      @case ('ROLE_STUDENT') {
+        <a routerLink="/student/my-scores" routerLinkActive="is-active" class="sidebar__item">
+          <span class="sidebar__icon">📝</span><span class="sidebar__label">Kết quả học tập</span>
+        </a>
+      }
+      @default {
+        <p class="sidebar__empty">Không có menu</p>
+      }
+    }
+  </nav>
+
+  <div class="sidebar__footer">Day 17 / 38 · 100 Days of Angular</div>
+</aside>

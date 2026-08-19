@@ -1,0 +1,17 @@
+<header class="topbar">
+  <div class="topbar__brand">
+    <span class="topbar__seal">HS</span>
+    <span class="topbar__title">Hệ thống Quản lý Học vụ</span>
+  </div>
+
+  <div class="topbar__account">
+    @if (auth.currentUser(); as user) {
+      <img class="topbar__avatar" [src]="user.avatarUrl" [alt]="user.fullName" />
+      <div class="topbar__account-info">
+        <span class="topbar__name">{{ user.fullName }}</span>
+        <span class="topbar__role">{{ roleLabel }}</span>
+      </div>
+    }
+    <button class="btn btn-ghost topbar__logout" (click)="logout()">Đăng xuất</button>
+  </div>
+</header>

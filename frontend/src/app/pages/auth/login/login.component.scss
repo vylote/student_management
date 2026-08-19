@@ -1,0 +1,86 @@
+.login-card {
+  padding: 36px 32px;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+
+    h1 {
+      font-size: 1.15rem;
+      line-height: 1.3;
+    }
+    p {
+      margin: 2px 0 0;
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+    }
+  }
+
+  &__seal {
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--navy-950);
+    color: var(--gold-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    border: 2px solid var(--gold-500);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__error {
+    margin: -6px 0 0;
+    color: var(--fail);
+    font-size: 0.85rem;
+    background: var(--fail-bg);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+  }
+
+  &__submit {
+    justify-content: center;
+    margin-top: 4px;
+    padding: 12px;
+  }
+
+  &__demo {
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+
+    p {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      margin: 0 0 10px;
+    }
+  }
+
+  &__demo-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    .btn { font-size: 0.8rem; padding: 7px 12px; }
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--navy-800);
+}

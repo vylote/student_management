@@ -1,0 +1,23 @@
+.back-link {
+  text-decoration: none;
+  color: var(--gold-500);
+}
+
+.final-score {
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.save-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+
+  &__message {
+    color: var(--pass);
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+}

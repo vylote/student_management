@@ -1,0 +1,88 @@
+.topbar {
+  height: 64px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--navy-950);
+  border-bottom: 1px solid var(--navy-700);
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__seal {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--gold-500);
+    color: var(--gold-400);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: #fff;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--navy-600);
+  }
+
+  &__account-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+  }
+
+  &__name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.86rem;
+  }
+
+  &__role {
+    color: var(--gold-400);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__logout {
+    color: #fff;
+    border-color: var(--navy-600);
+    font-size: 0.82rem;
+    padding: 8px 14px;
+  }
+  &__logout:hover {
+    background: var(--navy-800);
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar__account-info { display: none; }
+  .topbar__title { font-size: 0.85rem; }
+}

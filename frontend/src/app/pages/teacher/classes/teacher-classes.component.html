@@ -1,0 +1,23 @@
+<div class="page-head">
+  <div>
+    <p class="page-head__eyebrow">Giảng viên</p>
+    <h1>Lớp dạy của tôi</h1>
+  </div>
+  <span class="page-head__count">Học kỳ hiện tại</span>
+</div>
+
+<div class="class-grid">
+  @for (cls of scoreService.teacherClasses(); track cls.classId) {
+    <button type="button" class="class-card" (click)="goToScores(cls.classId)">
+      <span class="class-card__subject">{{ cls.subjectName }}</span>
+      <h3>{{ cls.className }}</h3>
+      <dl class="class-card__meta">
+        <div><dt>Sĩ số</dt><dd>{{ cls.studentCount }} SV</dd></div>
+        <div><dt>Số tiết</dt><dd>{{ cls.totalSessions }}</dd></div>
+      </dl>
+      <span class="class-card__cta">Quản lý điểm →</span>
+    </button>
+  } @empty {
+    <p>Bạn chưa được phân công lớp nào.</p>
+  }
+</div>

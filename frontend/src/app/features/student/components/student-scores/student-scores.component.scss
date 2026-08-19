@@ -1,0 +1,43 @@
+.scores-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+
+  h4 {
+    margin-top: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid #eee;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #f5f5f5;
+    }
+  }
+
+  .badge {
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .badge-pass {
+    background-color: #e6f7e6;
+    color: #2e7d32;
+  }
+
+  .badge-fail {
+    background-color: #fdecea;
+    color: #c62828;
+  }
+}

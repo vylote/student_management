@@ -62,8 +62,9 @@ Các component/pipe/directive **thuần hiển thị**, giống một cái nút 
 ```
 shared/
 ├── components/       # UI thuần, tái sử dụng (vd: LoadingSpinner, ConfirmDialog, Header, Footer)
-├── directives/        # Custom directive dùng chung
-└── pipes/             # Custom pipe dùng chung (vd: FormatDate, SafeHtml)
+├── directives/       # Custom directive dùng chung
+├── pipes/            # Custom pipe dùng chung (vd: FormatDate, SafeHtml)
+└── models/
 ```
 
 ### Ví dụ thực tế

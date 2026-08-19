@@ -1,0 +1,37 @@
+.master-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr; // Master hẹp hơn Detail 1 chút
+  gap: 1.5rem;
+  padding: 1.5rem;
+  align-items: start;
+}
+
+.master-panel {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #f5f5f5;
+    }
+
+    tbody tr {
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f0f8ff;
+      }
+
+      &.selected {
+        background-color: #cfe8ff;
+      }
+    }
+  }
+}

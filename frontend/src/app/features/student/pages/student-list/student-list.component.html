@@ -1,0 +1,38 @@
+<div class="master-detail-layout">
+
+  <!-- MASTER: Bảng danh sách bên trái -->
+  <div class="master-panel">
+    <h2>Danh sách sinh viên</h2>
+
+    @if (students.length > 0) {
+      <table>
+        <thead>
+          <tr>
+            <th>Mã SV</th>
+            <th>Họ tên</th>
+            <th>Lớp</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of students; track s.id) {
+            <tr
+              [class.selected]="selectedId === s.id"
+              (click)="select(s)">
+              <td>{{ s.code }}</td>
+              <td>{{ s.fullName }}</td>
+              <td>{{ s.classroom }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <p>Không có sinh viên nào.</p>
+    }
+  </div>
+
+  <!-- DETAIL: Khung chi tiết bên phải -->
+  <div class="detail-container">
+    <app-student-detail [studentId]="selectedId"></app-student-detail>
+  </div>
+
+</div>

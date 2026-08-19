@@ -1,0 +1,37 @@
+<div class="scores-box">
+  <h4>Bảng điểm</h4>
+
+  @if (scores.length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>Môn học</th>
+          <th>Quá trình</th>
+          <th>Thành phần</th>
+          <th>Tổng kết</th>
+          <th>Kết quả</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (score of scores; track score.id) {
+          <tr>
+            <td>{{ getSubjectName(score.subjectId) }}</td>
+            <td>{{ score.processScore }}</td>
+            <td>{{ score.componentScore }}</td>
+            <td>{{ score.finalScore }}</td>
+            <td>
+              <!-- Dùng field "passed" backend đã tính sẵn, không tự tính lại ở Frontend -->
+              @if (score.passed) {
+                <span class="badge badge-pass">Đỗ</span>
+              } @else {
+                <span class="badge badge-fail">Trượt</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p>Chưa có điểm môn học nào.</p>
+  }
+</div>

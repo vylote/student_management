@@ -1,7 +1,7 @@
 package com.softdreams.intern.mapper.impl;
 
 import com.softdreams.intern.dto.request.CreateSubjectRequest;
-import com.softdreams.intern.dto.response.SubjectResposne;
+import com.softdreams.intern.dto.response.SubjectResponse;
 import com.softdreams.intern.entity.Subject;
 import com.softdreams.intern.mapper.SubjectMapper;
 import org.springframework.stereotype.Component;
@@ -30,30 +30,30 @@ public class SubjectMapperImpl implements SubjectMapper {
     }
 
     @Override
-    public SubjectResposne toResponse(Subject subject) {
+    public SubjectResponse toResponse(Subject subject) {
         if ( subject == null ) {
             return null;
         }
 
-        SubjectResposne subjectResposne = new SubjectResposne();
+        SubjectResponse subjectResponse = new SubjectResponse();
 
-        subjectResposne.setId( subject.getId() );
-        subjectResposne.setCode( subject.getCode() );
-        subjectResposne.setName( subject.getName() );
-        subjectResposne.setTotalLesson( subject.getTotalLesson() );
-        subjectResposne.setProcessWeight( subject.getProcessWeight() );
-        subjectResposne.setComponentWeight( subject.getComponentWeight() );
+        subjectResponse.setId( subject.getId() );
+        subjectResponse.setCode( subject.getCode() );
+        subjectResponse.setName( subject.getName() );
+        subjectResponse.setTotalLesson( subject.getTotalLesson() );
+        subjectResponse.setProcessWeight( subject.getProcessWeight() );
+        subjectResponse.setComponentWeight( subject.getComponentWeight() );
 
-        return subjectResposne;
+        return subjectResponse;
     }
 
     @Override
-    public List<SubjectResposne> toResponses(List<Subject> subjects) {
+    public List<SubjectResponse> toResponses(List<Subject> subjects) {
         if ( subjects == null ) {
             return Collections.emptyList();
         }
 
-        List<SubjectResposne> list = new ArrayList<SubjectResposne>( subjects.size() );
+        List<SubjectResponse> list = new ArrayList<SubjectResponse>( subjects.size() );
         for ( Subject subject : subjects ) {
             list.add( toResponse( subject ) );
         }

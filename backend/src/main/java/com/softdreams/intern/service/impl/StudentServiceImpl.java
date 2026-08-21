@@ -6,7 +6,7 @@ import com.softdreams.intern.dto.request.StudentSearchRequest;
 import com.softdreams.intern.dto.response.PageResponse;
 import com.softdreams.intern.dto.response.RegisterSubjectResponse;
 import com.softdreams.intern.dto.response.StudentResponse;
-import com.softdreams.intern.dto.response.SubjectResposne;
+import com.softdreams.intern.dto.response.SubjectResponse;
 import com.softdreams.intern.entity.Score;
 import com.softdreams.intern.entity.Student;
 import com.softdreams.intern.entity.Subject;
@@ -82,7 +82,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<SubjectResposne> getSubjectsByStudentId(Long studentId) {
+    public List<SubjectResponse> getSubjectsByStudentId(Long studentId) {
         if (!studentRepository.existsById(studentId)) {
             throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
         }

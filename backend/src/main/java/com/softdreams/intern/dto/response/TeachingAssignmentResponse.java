@@ -14,7 +14,7 @@ public class TeachingAssignmentResponse {
 
     String classroom;
 
-    SubjectResposne subject;
+    SubjectResponse subject;
 
     TeacherResponse teacher;
 }

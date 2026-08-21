@@ -6,7 +6,7 @@ import com.softdreams.intern.dto.request.StudentSearchRequest;
 import com.softdreams.intern.dto.response.PageResponse;
 import com.softdreams.intern.dto.response.RegisterSubjectResponse;
 import com.softdreams.intern.dto.response.StudentResponse;
-import com.softdreams.intern.dto.response.SubjectResposne;
+import com.softdreams.intern.dto.response.SubjectResponse;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface StudentService {
 
     StudentResponse getStudentById(Long id);
 
-    List<SubjectResposne> getSubjectsByStudentId(Long id);
+    List<SubjectResponse> getSubjectsByStudentId(Long id);
 
     StudentResponse createAccount(String code, String password, String roleCode);
 

@@ -1,7 +1,7 @@
 package com.softdreams.intern.service.impl;
 
 import com.softdreams.intern.dto.request.CreateSubjectRequest;
-import com.softdreams.intern.dto.response.SubjectResposne;
+import com.softdreams.intern.dto.response.SubjectResponse;
 import com.softdreams.intern.entity.Subject;
 import com.softdreams.intern.exception.AppException;
 import com.softdreams.intern.exception.ErrorCode;
@@ -20,7 +20,7 @@ public class SubjectServiceImpl implements SubjectService {
     final SubjectMapper subjectMapper;
 
     @Override
-    public SubjectResposne addSubject(CreateSubjectRequest request) {
+    public SubjectResponse addSubject(CreateSubjectRequest request) {
         if (subjectRepository.existsByCode(request.getCode())) {
             throw new AppException(ErrorCode.SUBJECT_ALREADY_EXISTS);
         }

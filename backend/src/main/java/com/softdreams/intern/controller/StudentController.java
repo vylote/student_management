@@ -45,8 +45,8 @@ public class StudentController {
 
     @PreAuthorize("hasAuthority('subject:read')")
     @GetMapping("/{studentId}/subjects")
-    public ApiResponse<List<SubjectResposne>> getSubjectsByStudentId(@PathVariable Long studentId) {
-        return ApiResponse.<List<SubjectResposne>>builder()
+    public ApiResponse<List<SubjectResponse>> getSubjectsByStudentId(@PathVariable Long studentId) {
+        return ApiResponse.<List<SubjectResponse>>builder()
                 .data(studentService.getSubjectsByStudentId(studentId))
                 .build();
     }

@@ -1,59 +1,57 @@
-import { Injectable, computed, signal } from '@angular/core';
-import { Observable, delay, of, throwError } from 'rxjs';
-import { LoginRequest, LoginResponse, Role, User } from '../models/user.model';
-import { MOCK_USERS } from '../mock-data/users.mock';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../dto/response/api-response.dto';
+import { TokenResponse } from '../dto/response/token-response.dto';
+import { LoginRequest } from '../dto/request/login-request.dto';
+import { JwtPayload } from '../dto/jwt-payload.dto';
+import { Account, Role } from '../models/account.model';
 
-const TOKEN_KEY = 'sms_token';
-const USER_KEY = 'sms_user';
+const TOKEN_KEY = 'jwt_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // Signal lưu user hiện tại - toàn bộ UI (Header, Sidebar, Guard) đọc từ đây
-  private currentUserSignal = signal<User | null>(this.readUserFromStorage());
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/accounts`;
 
-  readonly currentUser = computed(() => this.currentUserSignal());
-  readonly isLoggedIn = computed(() => !!this.currentUserSignal());
-  readonly role = computed<Role | null>(() => this.currentUserSignal()?.role ?? null);
+  // Signal gốc đọc từ LocalStorage khi F5 tải lại trang
+  private currentAccountSignal = signal<Account | null>(this.readAccountFromToken());
 
-  /**
-   * TODO: Khi có backend, thay nội dung hàm này bằng:
-   * return this.http.post<LoginResponse>('/api/auth/login', payload);
-   */
-  login(payload: LoginRequest): Observable<LoginResponse> {
-    const found = MOCK_USERS.find(
-      (u) => u.username === payload.username && u.password === payload.password
+  // Các Computed Signals cung cấp data cho Header, Sidebar, Guard
+  readonly currentAccount = computed(() => this.currentAccountSignal());
+  readonly isLoggedIn = computed(() => !!this.currentAccountSignal());
+  readonly role = computed<string | null>(() => this.currentAccountSignal()?.role ?? null);
+
+  login(request: LoginRequest): Observable<ApiResponse<TokenResponse>> {
+    // this.http.post trả về observable, lazy — chỉ bắn request khi gọi .subscribe()
+    return this.http.post<ApiResponse<TokenResponse>>(`${this.apiUrl}/login`, request).pipe(
+      // tap() != map(): map biến đổi giá trị trả cho luồng đi tiếp, tap là utility operator (side-effect)
+      tap((res) => {
+        if (res.code === '1000' && res.data?.token) {
+          this.setSession(res.data.token);
+        }
+      })
     );
-
-    if (!found) {
-      return throwError(() => new Error('Sai tài khoản hoặc mật khẩu')).pipe(delay(400));
-    }
-
-    const { password, ...user } = found;
-    const response: LoginResponse = {
-      token: 'mock-jwt-token.' + btoa(user.username) + '.' + Date.now(),
-      user,
-    };
-
-    return of(response).pipe(delay(500));
   }
 
-  setSession(response: LoginResponse): void {
-    localStorage.setItem(TOKEN_KEY, response.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(response.user));
-    this.currentUserSignal.set(response.user);
+  // localStorage: API trình duyệt thuần, dùng để lưu token sống sót qua F5 (reload trang)
+  setSession(token: string): void {
+    localStorage.setItem(TOKEN_KEY, token);
+    this.currentAccountSignal.set(this.parseAccount(token));
   }
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    this.currentUserSignal.set(null);
+    this.currentAccountSignal.set(null);
   }
 
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
   }
 
-  homeRouteForRole(role: Role): string {
+  homeRouteForRole(role: string | null): string {
     switch (role) {
       case 'ROLE_PRINCIPAL':
         return '/principal/students';
@@ -61,11 +59,30 @@ export class AuthService {
         return '/teacher/classes';
       case 'ROLE_STUDENT':
         return '/student/my-scores';
+      default:
+        return '/auth/login';
     }
   }
 
-  private readUserFromStorage(): User | null {
-    const raw = localStorage.getItem(USER_KEY);
-    return raw ? (JSON.parse(raw) as User) : null;
+  // Lớp cách ly duy nhất giữa JwtPayload (dto, do BE định nghĩa) và Account (model, FE tự dùng nội bộ).
+  // Backend đổi claim trong token -> chỉ sửa đúng hàm này, không ảnh hưởng chỗ khác trong app.
+  private parseAccount(token: string): Account {
+    const decoded = jwtDecode<JwtPayload>(token);
+
+    return {
+      id: decoded.id,
+      username: decoded.sub,
+      role: decoded.role as Role,
+    };
+  }
+
+  private readAccountFromToken(): Account | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      return this.parseAccount(token);
+    } catch {
+      return null;
+    }
   }
 }

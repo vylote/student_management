@@ -1,12 +1,28 @@
-import { Injectable, signal } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
-import { ClassScoreRow, MyScoreRow, ScoreDTO, TeacherClass } from '../models/academic.model';
-import { MOCK_CLASS_SCORES, MOCK_MY_SCORES, MOCK_TEACHER_CLASSES } from '../mock-data/academic.mock';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, delay, map, of } from 'rxjs';
+import {
+  ClassScoreRow,
+  MyScoreRow,
+  ScoreDTO,
+  TeacherClass,
+} from '../models/academic.model';
+import { ScoreResponse } from '../dto/response/score-response.dto';
+import {
+  MOCK_CLASS_SCORES,
+  MOCK_MY_SCORES,
+  MOCK_TEACHER_CLASSES,
+} from '../mock-data/academic.mock';
+import { ApiResponse } from '../dto/response/api-response.dto';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 export const PASS_THRESHOLD = 4.0;
 
 @Injectable({ providedIn: 'root' })
 export class ScoreService {
+  private http = inject(HttpClient);
+  private baseUrl = environment.apiUrl;
+
   readonly teacherClasses = signal<TeacherClass[]>([]);
   readonly currentClassScores = signal<ClassScoreRow[]>([]);
   readonly myScores = signal<MyScoreRow[]>([]);
@@ -16,10 +32,11 @@ export class ScoreService {
     processScore: number | null,
     componentScore: number | null,
     processWeight = 40,
-    componentWeight = 60
+    componentWeight = 60,
   ): number | null {
     if (processScore === null || componentScore === null) return null;
-    const final = (processScore * processWeight + componentScore * componentWeight) / 100;
+    const final =
+      (processScore * processWeight + componentScore * componentWeight) / 100;
     return Math.round(final * 10) / 10;
   }
 
@@ -43,7 +60,9 @@ export class ScoreService {
   }
 
   loadClassScores(classId: string): void {
-    this.getClassScores(classId).subscribe((data) => this.currentClassScores.set(data));
+    this.getClassScores(classId).subscribe((data) =>
+      this.currentClassScores.set(data),
+    );
   }
 
   /** TODO: this.http.post('/api/teacher/scores', scores) */
@@ -58,5 +77,13 @@ export class ScoreService {
 
   loadMyScores(): void {
     this.getMyScores().subscribe((data) => this.myScores.set(data));
+  }
+
+  getScoresByStudentId(studentId: number): Observable<ScoreResponse[]> {
+    return this.http
+      .get<
+        ApiResponse<ScoreResponse[]>
+      >(`${this.baseUrl}/scores/student/${studentId}`)
+      .pipe(map((res) => res.data));
   }
 }

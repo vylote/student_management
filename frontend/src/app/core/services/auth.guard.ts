@@ -1,9 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { Role } from '../models/user.model';
 
-/** Chặn truy cập nếu chưa đăng nhập */
 export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
@@ -13,19 +11,19 @@ export const authGuard: CanActivateFn = () => {
   return false;
 };
 
-/** Chặn truy cập nếu vai trò không khớp - dùng route data: { roles: ['ROLE_PRINCIPAL'] } */
 export const roleGuard: CanActivateFn = (route) => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  const allowedRoles = route.data['roles'] as Role[] | undefined;
+  const allowedRoles = route.data['roles'] as string[] | undefined;
 
   if (!auth.isLoggedIn()) {
     router.navigate(['/auth/login']);
     return false;
   }
 
-  if (allowedRoles && !allowedRoles.includes(auth.role()!)) {
-    router.navigate([auth.homeRouteForRole(auth.role()!)]);
+  const currentRole = auth.role();
+  if (allowedRoles && currentRole && !allowedRoles.includes(currentRole)) {
+    router.navigate([auth.homeRouteForRole(currentRole)]);
     return false;
   }
 

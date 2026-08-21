@@ -5,13 +5,14 @@
   </div>
 
   <div class="topbar__account">
-    @if (auth.currentUser(); as user) {
-      <img class="topbar__avatar" [src]="user.avatarUrl" [alt]="user.fullName" />
+    @if (auth.currentAccount(); as account) {
       <div class="topbar__account-info">
-        <span class="topbar__name">{{ user.fullName }}</span>
+        <span class="topbar__name">{{ account.username }}</span>
         <span class="topbar__role">{{ roleLabel }}</span>
       </div>
     }
-    <button class="btn btn-ghost topbar__logout" (click)="logout()">Đăng xuất</button>
+    <button class="btn btn-ghost topbar__logout" (click)="logout()">
+      Đăng xuất
+    </button>
   </div>
 </header>

@@ -21,18 +21,20 @@ export class ClassScoresComponent implements OnChanges {
   savedMessage = signal<string | null>(null);
 
   readonly currentClass = computed(() =>
-    this.scoreService.teacherClasses().find((c) => c.classId === this.classId)
+    this.scoreService.teacherClasses().find((c) => c.classId === this.classId),
   );
 
   readonly currentSubject = computed(() => {
     const cls = this.currentClass();
-    return cls ? this.academic.subjects().find((s) => s.id === cls.subjectId) : undefined;
+    return cls
+      ? this.academic.subjects().find((s) => s.id === cls.subjectId)
+      : undefined;
   });
 
   constructor(
     public scoreService: ScoreService,
     public academic: AcademicService,
-    private auth: AuthService
+    private auth: AuthService,
   ) {}
 
   ngOnChanges(): void {
@@ -48,7 +50,7 @@ export class ClassScoresComponent implements OnChanges {
       row.processScore,
       row.componentScore,
       subject?.processWeight,
-      subject?.componentWeight
+      subject?.componentWeight,
     );
   }
 
@@ -58,18 +60,17 @@ export class ClassScoresComponent implements OnChanges {
 
   save(): void {
     const cls = this.currentClass();
-    const teacherId = this.auth.currentUser()?.id;
-    if (!cls || !teacherId) return;
+    if (!cls) return;
 
-    const payload: ScoreDTO[] = this.scoreService
+    const payload = this.scoreService
       .currentClassScores()
       .filter((r) => r.processScore !== null && r.componentScore !== null)
       .map((r) => ({
         studentId: r.studentId,
         subjectId: cls.subjectId,
-        teacherId,
         processScore: r.processScore as number,
         componentScore: r.componentScore as number,
+        // Không gửi teacherId — backend tự lấy giảng viên hiện tại từ JWT (SecurityContext)
       }));
 
     this.saving.set(true);

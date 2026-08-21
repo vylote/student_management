@@ -27,23 +27,18 @@ export class LoginComponent {
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    this.auth
-      .login({ username: this.username(), password: this.password() })
-      .subscribe({
-        next: (res) => {
-          this.auth.setSession(res);
+    // 
+    this.auth.login({ username: this.username(), password: this.password() }).subscribe({
+        next: () => {
           this.loading.set(false);
-          this.router.navigateByUrl(this.auth.homeRouteForRole(res.user.role));
+          // Lúc này setSession bên trong auth.login() đã chạy, signal đã có data
+          const userRole = this.auth.role();
+          this.router.navigateByUrl(this.auth.homeRouteForRole(userRole));
         },
         error: (err) => {
           this.loading.set(false);
-          this.errorMessage.set(err.message ?? 'Đăng nhập thất bại');
+          this.errorMessage.set(err.error?.msg || 'Đăng nhập thất bại');
         },
       });
-  }
-
-  fillDemo(username: string, password: string): void {
-    this.username.set(username);
-    this.password.set(password);
   }
 }

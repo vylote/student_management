@@ -64,6 +64,7 @@ export const routes: Routes = [
             (m) => m.MyScoresComponent
           ),
       },
+      // TODO: chỗ này sau sửa lại redirect tới home theo role
       { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
     ],
   },

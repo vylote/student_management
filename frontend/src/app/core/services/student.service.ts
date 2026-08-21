@@ -1,25 +1,43 @@
-import { Injectable, signal } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
-import { StudentDTO } from '../models/student.model';
-import { MOCK_STUDENTS } from '../mock-data/students.mock';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { StudentResponse } from '../dto/response/student-response.dto';
+import { SubjectResponse } from '../dto/response/subject-response.dto';
+import { ApiResponse } from '../dto/response/api-response.dto';
 
 @Injectable({ providedIn: 'root' })
 export class StudentService {
-  // Signal danh sách sinh viên - Component gán trực tiếp từ kết quả API vào đây
-  readonly students = signal<StudentDTO[]>([]);
+  private http = inject(HttpClient);
+  private baseUrl = environment.apiUrl;
 
-  /**
-   * TODO: thay bằng this.http.get<StudentDTO[]>('/api/principal/students')
-   */
-  getAllStudents(): Observable<StudentDTO[]> {
-    return of(MOCK_STUDENTS).pipe(delay(300));
+  readonly students = signal<StudentResponse[]>([]);
+  readonly loading = signal(false);
+
+  getAllStudents(): Observable<StudentResponse[]> {
+    return this.http
+      .get<ApiResponse<StudentResponse[]>>(`${this.baseUrl}/students`)
+      .pipe(map((res) => res.data));
   }
 
   loadStudents(): void {
-    this.getAllStudents().subscribe((data) => this.students.set(data));
+    this.loading.set(true);
+    this.getAllStudents().subscribe({
+      next: (data) => { this.students.set(data); this.loading.set(false); },
+      error: () => this.loading.set(false),
+    });
   }
 
-  getStudentById(id: number): StudentDTO | undefined {
-    return this.students().find((s) => s.id === id) ?? MOCK_STUDENTS.find((s) => s.id === id);
+  getStudentById(id: number): Observable<StudentResponse> {
+    return this.http
+      .get<ApiResponse<StudentResponse>>(`${this.baseUrl}/students/${id}`)
+      .pipe(map((res) => res.data));
+  }
+
+  // Tính năng 3: danh sách môn học sinh viên đã đăng ký (chưa kèm điểm)
+  getSubjectsByStudentId(studentId: number): Observable<SubjectResponse[]> {
+    return this.http
+      .get<ApiResponse<SubjectResponse[]>>(`${this.baseUrl}/students/${studentId}/subjects`)
+      .pipe(map((res) => res.data));
   }
 }

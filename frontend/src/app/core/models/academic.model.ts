@@ -1,9 +1,9 @@
 export interface Subject {
   id: number;
   name: string;
-  totalSessions: number; // Số tiết
-  processWeight: number; // Tỷ lệ điểm quá trình (%)
-  componentWeight: number; // Tỷ lệ điểm thành phần (%)
+  totalSessions: number;
+  processWeight: number;
+  componentWeight: number;
   assignedTeacherId?: number | null;
   assignedTeacherName?: string | null;
 }
@@ -29,7 +29,6 @@ export interface TeacherClass {
 export interface ScoreDTO {
   studentId: number;
   subjectId: number;
-  teacherId: number;
   processScore: number;
   componentScore: number;
 }

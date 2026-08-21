@@ -14,8 +14,9 @@
         class="input"
         type="text"
         name="username"
-        [(ngModel)]="username"
-        placeholder="vd: hieutruong"
+        [ngModel]="username()"
+        (ngModelChange)="username.set($event)"
+        placeholder="Ten dang nhap"
         autocomplete="username"
       />
     </label>
@@ -26,7 +27,8 @@
         class="input"
         type="password"
         name="password"
-        [(ngModel)]="password"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
         placeholder="••••••••"
         autocomplete="current-password"
       />
@@ -36,17 +38,13 @@
       <p class="login-card__error">{{ errorMessage() }}</p>
     }
 
-    <button type="submit" class="btn btn-gold login-card__submit" [disabled]="loading()">
-      {{ loading() ? 'Đang đăng nhập…' : 'Đăng nhập' }}
+    <button
+      type="submit"
+      class="btn btn-gold login-card__submit"
+      [disabled]="loading()"
+    >
+      {{ loading() ? "Đang đăng nhập…" : "Đăng nhập" }}
     </button>
   </form>
 
-  <div class="login-card__demo">
-    <p>Tài khoản demo (mock, mật khẩu: 123456)</p>
-    <div class="login-card__demo-list">
-      <button type="button" class="btn btn-ghost" (click)="fillDemo('hieutruong', '123456')">Hiệu trưởng</button>
-      <button type="button" class="btn btn-ghost" (click)="fillDemo('giangvien', '123456')">Giảng viên</button>
-      <button type="button" class="btn btn-ghost" (click)="fillDemo('sinhvien', '123456')">Sinh viên</button>
-    </div>
-  </div>
 </div>

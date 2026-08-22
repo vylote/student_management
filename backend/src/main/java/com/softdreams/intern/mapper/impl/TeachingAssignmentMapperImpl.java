@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -30,5 +34,18 @@ public class TeachingAssignmentMapperImpl implements TeachingAssignmentMapper {
         teachingAssignmentResponse.setTeacher(teacherMapper.toResponse(teachingAssignment.getTeacher()));
 
         return teachingAssignmentResponse;
+    }
+
+    @Override
+    public List<TeachingAssignmentResponse> toResponses(List<TeachingAssignment> teachingAssignments) {
+        if (teachingAssignments == null)
+            return Collections.emptyList();
+
+        List<TeachingAssignmentResponse> teachingAssignmentResponses = new ArrayList<>(teachingAssignments.size());
+        for (TeachingAssignment teachingAssignment : teachingAssignments) {
+            teachingAssignmentResponses.add(toResponse(teachingAssignment));
+        }
+
+        return teachingAssignmentResponses;
     }
 }

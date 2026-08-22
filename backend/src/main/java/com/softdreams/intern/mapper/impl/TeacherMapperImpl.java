@@ -3,15 +3,17 @@ package com.softdreams.intern.mapper.impl;
 import com.softdreams.intern.dto.request.CreateTeacherRequest;
 import com.softdreams.intern.dto.response.TeacherResponse;
 import com.softdreams.intern.entity.Teacher;
-import com.softdreams.intern.mapper.AccountMapper;
 import com.softdreams.intern.mapper.TeacherMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class TeacherMapperImpl implements TeacherMapper {
-    private final AccountMapper accountMapper;
 
     @Override
     public Teacher toTeacher(CreateTeacherRequest request) {
@@ -49,5 +51,18 @@ public class TeacherMapperImpl implements TeacherMapper {
         }
 
         return teacherResponse;
+    }
+
+    public List<TeacherResponse> toResponses(List<Teacher> teachers) {
+        if ( teachers == null ) {
+            return Collections.emptyList();
+        }
+
+        List<TeacherResponse> teacherResponses = new ArrayList<>();
+        for ( Teacher teacher : teachers ) {
+            teacherResponses.add( toResponse( teacher ) );
+        }
+
+        return teacherResponses;
     }
 }

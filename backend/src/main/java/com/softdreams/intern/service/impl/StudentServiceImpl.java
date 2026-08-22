@@ -3,16 +3,14 @@ package com.softdreams.intern.service.impl;
 import com.softdreams.intern.dto.request.CreateStudentRequest;
 import com.softdreams.intern.dto.request.RegisterSubjectRequest;
 import com.softdreams.intern.dto.request.StudentSearchRequest;
-import com.softdreams.intern.dto.response.PageResponse;
-import com.softdreams.intern.dto.response.RegisterSubjectResponse;
-import com.softdreams.intern.dto.response.StudentResponse;
-import com.softdreams.intern.dto.response.SubjectResponse;
+import com.softdreams.intern.dto.response.*;
 import com.softdreams.intern.entity.Score;
 import com.softdreams.intern.entity.Student;
 import com.softdreams.intern.entity.Subject;
 import com.softdreams.intern.entity.TeachingAssignment;
 import com.softdreams.intern.exception.AppException;
 import com.softdreams.intern.exception.ErrorCode;
+import com.softdreams.intern.mapper.ScoreMapper;
 import com.softdreams.intern.mapper.StudentMapper;
 import com.softdreams.intern.mapper.SubjectMapper;
 import com.softdreams.intern.repository.ScoreRepository;
@@ -54,6 +52,7 @@ public class StudentServiceImpl implements StudentService {
     final SubjectMapper subjectMapper;
 
     final AccountService accountService;
+    private final ScoreMapper scoreMapper;
 
     @Override
     public StudentResponse addStudent(CreateStudentRequest request) {
@@ -122,12 +121,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public RegisterSubjectResponse registerSubject(RegisterSubjectRequest request) {
-        Long accountId = (Long) Objects.requireNonNull(SecurityContextHolder.getContext()
-                        .getAuthentication())
-                .getPrincipal();
-
-        Student student = studentRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new AppException(ErrorCode.STUDENT_NOT_FOUND));
+        Student student = getCurrentStudent();
 
         Subject subject = subjectRepository.findById(request.getSubjectId())
                 .orElseThrow(() -> new AppException(ErrorCode.SUBJECT_NOT_FOUND));
@@ -151,5 +145,25 @@ public class StudentServiceImpl implements StudentService {
         RegisterSubjectResponse response = new RegisterSubjectResponse();
         response.setSubject(subjectMapper.toResponse(subject));
         return response;
+    }
+
+    @Override
+    public List<ScoreResponse> getMyScores() {
+
+        Student student = getCurrentStudent();
+
+        List<Score> myScores = scoreRepository.findByStudentId(student.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.SCORE_NOT_FOUND));
+
+        return scoreMapper.toResponseList(myScores);
+    }
+
+    Student getCurrentStudent() {
+        Long accountId = (Long) Objects.requireNonNull(SecurityContextHolder.getContext()
+                        .getAuthentication())
+                .getPrincipal();
+
+        return studentRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.STUDENT_NOT_FOUND));
     }
 }

@@ -19,12 +19,14 @@ public enum ErrorCode {
     SCORE_ALREADY_EXISTS("1003", "Sinh viên đã có điểm môn này", HttpStatus.CONFLICT),
 
     SCORE_NOT_FOUND("1004", "Sinh viên chưa có điểm môn này", HttpStatus.NOT_FOUND),
+    CLASS_NOT_FOUND("1021", "Không tìm thấy lớp", HttpStatus.NOT_FOUND),
     TEACHER_NOT_FOUND("1014", "Không tìm thấy giảng viên", HttpStatus.NOT_FOUND),
     STUDENT_NOT_FOUND("1005", "Không tìm thấy sinh viên", HttpStatus.NOT_FOUND),
     SUBJECT_NOT_FOUND("1006", "Không tìm thấy môn học", HttpStatus.NOT_FOUND),
     SUBJECT_ALREADY_REGISTERED("1017", "Môn hoc được được đăng kí", HttpStatus.CONFLICT),
     SUBJECT_ALREADY_ASSIGNED("1018", "Môn học đã được gán cho giảng viên", HttpStatus.CONFLICT),
     NO_TEACHER_ASSIGNED("1019", "Chưa có giảng viên phụ trách môn học này ở lớp của bạn", HttpStatus.BAD_REQUEST),
+    NO_TEACHING_ASSIGNMENT("1020", "Bạn chưa được phân công giảng dạy", HttpStatus.NOT_FOUND),
 
     INVALID_SUBJECT_WEIGHT("1007", "Tổng trọng số điểm phải là 1", HttpStatus.BAD_REQUEST),
 
@@ -37,6 +39,7 @@ public enum ErrorCode {
     USERNAME_ALREADY_EXISTS("1012", "Tên đăng nhập đã tồn tại", HttpStatus.CONFLICT),
     ROLE_NOT_EXISTS("1013", "Vai trò không tồn tại", HttpStatus.NOT_FOUND),
     PERMISSION_NOT_FOUND("1016", "Không tìm thấy quyền nào", HttpStatus.NOT_FOUND),
+    RESOURCE_NOT_FOUND("1022", "Không tìm thấy đường dẫn", HttpStatus.NOT_FOUND),
 
     UNAUTHENTICATED("1015", "Unauthenticated", HttpStatus.UNAUTHORIZED),
     ;

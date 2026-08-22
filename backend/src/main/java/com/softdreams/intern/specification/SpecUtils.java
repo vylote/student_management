@@ -1,4 +1,4 @@
-package com.softdreams.intern.util;
+package com.softdreams.intern.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;

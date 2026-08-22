@@ -1,7 +1,10 @@
 package com.softdreams.intern.repository;
 
 import com.softdreams.intern.entity.Score;
+import com.softdreams.intern.entity.Student;
 import com.softdreams.intern.entity.Subject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +24,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     Optional<List<Score>> findByStudentId(Long studentId);
 
     boolean existsByStudentIdAndSubjectId(Long studentId, Long subjectId);
+
+    @Query("SELECT s.student FROM Score s WHERE s.subject.id = :subjectId AND s.classroom = :classroom")
+    Optional<Page<Student>> findAllStudentsBySubjectIdAndClassroom(Long subjectId, String classroom, Pageable pageable);
 }

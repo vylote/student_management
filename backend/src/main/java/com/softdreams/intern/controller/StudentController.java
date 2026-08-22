@@ -64,7 +64,7 @@ public class StudentController {
     @PreAuthorize("hasAuthority('student:read')")
     @GetMapping("/search")
     public ApiResponse<PageResponse<StudentResponse>> searchStudents(
-            StudentSearchRequest request
+           @ModelAttribute StudentSearchRequest request
     ) {
         return ApiResponse.<PageResponse<StudentResponse>>builder()
                 .data(studentService.searchStudents(request))
@@ -76,6 +76,14 @@ public class StudentController {
     public ApiResponse<RegisterSubjectResponse> registerSubject(@Valid @RequestBody RegisterSubjectRequest request) {
         return ApiResponse.<RegisterSubjectResponse>builder()
                 .data(studentService.registerSubject(request))
+                .build();
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/scores")
+    public ApiResponse<List<ScoreResponse>> getMyScores() {
+        return ApiResponse.<List<ScoreResponse>>builder()
+                .data(studentService.getMyScores())
                 .build();
     }
 }

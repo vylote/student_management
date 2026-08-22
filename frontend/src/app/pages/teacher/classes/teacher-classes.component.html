@@ -1,23 +1,95 @@
 <div class="page-head">
   <div>
     <p class="page-head__eyebrow">Giảng viên</p>
-    <h1>Lớp dạy của tôi</h1>
+    <h1>Nhập điểm Sinh viên</h1>
   </div>
-  <span class="page-head__count">Học kỳ hiện tại</span>
 </div>
 
-<div class="class-grid">
-  @for (cls of scoreService.teacherClasses(); track cls.classId) {
-    <button type="button" class="class-card" (click)="goToScores(cls.classId)">
-      <span class="class-card__subject">{{ cls.subjectName }}</span>
-      <h3>{{ cls.className }}</h3>
-      <dl class="class-card__meta">
-        <div><dt>Sĩ số</dt><dd>{{ cls.studentCount }} SV</dd></div>
-        <div><dt>Số tiết</dt><dd>{{ cls.totalSessions }}</dd></div>
-      </dl>
-      <span class="class-card__cta">Quản lý điểm →</span>
-    </button>
-  } @empty {
-    <p>Bạn chưa được phân công lớp nào.</p>
-  }
+<div class="card" style="padding:20px; display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+  <label class="field" style="min-width:220px;">
+    <span>Môn học</span>
+    <select class="input" (change)="onSubjectChange($any($event.target).value)">
+      <option value="" disabled selected>-- Chọn môn học --</option>
+      @for (subject of subjects(); track subject.id) {
+        <option [value]="subject.id">{{ subject.name }}</option>
+      }
+    </select>
+  </label>
+
+  <label class="field" style="min-width:220px;">
+    <span>Lớp</span>
+    <select class="input" [disabled]="!selectedSubjectId()" (change)="onClassroomChange($any($event.target).value)">
+      <option value="" disabled selected>-- Chọn lớp --</option>
+      @for (classroom of classrooms(); track classroom) {
+        <option [value]="classroom">{{ classroom }}</option>
+      }
+    </select>
+  </label>
 </div>
+
+@if (selectedClassroom()) {
+  <div class="card table-card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Mã SV</th>
+          <th>Họ tên</th>
+          <th>Điểm quá trình</th>
+          <th>Điểm thành phần</th>
+          <th>Tổng kết</th>
+          <th>Kết quả</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loadingStudents()) {
+          <tr><td colspan="7" class="table__empty">Đang tải...</td></tr>
+        } @else {
+          @for (row of students(); track row.id) {
+            <tr>
+              <td class="mono">{{ row.code }}</td>
+              <td class="table__name">{{ row.fullName }}</td>
+              <td>
+                <input type="number" class="input input-score" min="0" max="10" step="0.1"
+                  [(ngModel)]="row.processScore" name="process-{{ row.id }}" />
+              </td>
+              <td>
+                <input type="number" class="input input-score" min="0" max="10" step="0.1"
+                  [(ngModel)]="row.componentScore" name="component-{{ row.id }}" />
+              </td>
+              <td>{{ row.finalScore ?? '—' }}</td>
+              <td>
+                @if (row.passed === null) {
+                  <span class="badge badge-count">Chưa có điểm</span>
+                } @else if (row.passed) {
+                  <span class="badge badge-pass">Đỗ</span>
+                } @else {
+                  <span class="badge badge-fail">Trượt</span>
+                }
+              </td>
+              <td>
+                <button class="btn btn-gold" style="padding:6px 10px;font-size:0.78rem"
+                  [disabled]="row.processScore === null || row.componentScore === null || savingStudentId() === row.id"
+                  (click)="saveScore(row)">
+                  {{ savingStudentId() === row.id ? '...' : 'Lưu' }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="table__empty">Lớp này chưa có sinh viên.</td></tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (totalPages() > 1) {
+    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:16px;">
+      <button class="btn btn-ghost" [disabled]="currentPage() === 1" (click)="changePage(-1)">← Trước</button>
+      <span style="align-self:center; font-size:0.85rem; color:var(--ink-soft)">
+        Trang {{ currentPage() }} / {{ totalPages() }}
+      </span>
+      <button class="btn btn-ghost" [disabled]="currentPage() === totalPages()" (click)="changePage(1)">Sau →</button>
+    </div>
+  }
+}

@@ -3,7 +3,7 @@
     <p class="page-head__eyebrow">Sinh viên</p>
     <h1>Kết quả học tập cá nhân</h1>
   </div>
-  <span class="page-head__count">{{ scoreService.myScores().length }} môn học</span>
+  <span class="page-head__count">{{ rows().length }} môn học</span>
 </div>
 
 <div class="card table-card">
@@ -12,7 +12,6 @@
       <tr>
         <th>Môn học</th>
         <th>Số tiết</th>
-        <th>Giảng viên</th>
         <th>Điểm quá trình</th>
         <th>Điểm thành phần</th>
         <th>Điểm tổng kết</th>
@@ -20,26 +19,27 @@
       </tr>
     </thead>
     <tbody>
-      @for (row of scoreService.myScores(); track row.subjectName) {
-        <tr>
-          <td class="table__name">{{ row.subjectName }}</td>
-          <td>{{ row.totalSessions }} tiết</td>
-          <td>{{ row.teacherName }}</td>
-          <td>{{ row.processScore ?? '—' }}</td>
-          <td>{{ row.componentScore ?? '—' }}</td>
-          <td class="final-score">{{ row.finalScore ?? '—' }}</td>
-          <td>
-            @if (isPass(row) === null) {
-              <span class="badge badge-count">Chưa có điểm</span>
-            } @else if (isPass(row)) {
-              <span class="badge badge-pass">Đỗ</span>
-            } @else {
-              <span class="badge badge-fail">Trượt</span>
-            }
-          </td>
-        </tr>
-      } @empty {
-        <tr><td colspan="7" class="table__empty">Bạn chưa đăng ký môn học nào.</td></tr>
+      @if (loading()) {
+        <tr><td colspan="6" class="table__empty">Đang tải...</td></tr>
+      } @else {
+        @for (row of rows(); track row.subjectName) {
+          <tr>
+            <td class="table__name">{{ row.subjectName }}</td>
+            <td>{{ row.totalLesson }} tiết</td>
+            <td>{{ row.processScore }}</td>
+            <td>{{ row.componentScore }}</td>
+            <td class="final-score">{{ row.finalScore }}</td>
+            <td>
+              @if (row.passed) {
+                <span class="badge badge-pass">Đỗ</span>
+              } @else {
+                <span class="badge badge-fail">Trượt</span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="table__empty">Bạn chưa có điểm môn học nào.</td></tr>
+        }
       }
     </tbody>
   </table>

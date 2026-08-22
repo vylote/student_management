@@ -1,6 +1,6 @@
 export interface UpdateScoreRequest {
-  processScore: number;
-  componentScore: number;
   studentId: number;
   subjectId: number;
+  processScore: number;
+  componentScore: number;
 }

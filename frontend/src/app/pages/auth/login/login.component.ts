@@ -16,7 +16,10 @@ export class LoginComponent {
   loading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+  ) {}
 
   onSubmit(): void {
     if (!this.username() || !this.password()) {
@@ -27,13 +30,18 @@ export class LoginComponent {
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    // 
-    this.auth.login({ username: this.username(), password: this.password() }).subscribe({
+    // subcribe ở đây mới bắn req
+    this.auth
+      .login({ username: this.username(), password: this.password() })
+      .subscribe({
         next: () => {
           this.loading.set(false);
-          // Lúc này setSession bên trong auth.login() đã chạy, signal đã có data
           const userRole = this.auth.role();
-          this.router.navigateByUrl(this.auth.homeRouteForRole(userRole));
+          const target = this.auth.homeRouteForRole(userRole);
+          console.log('role:', userRole, '-> target:', target);
+          this.router.navigateByUrl(target).then((success) => {
+            console.log('navigate success?', success);
+          });
         },
         error: (err) => {
           this.loading.set(false);

@@ -1,7 +1,7 @@
 <div class="page-head">
   <div>
     <p class="page-head__eyebrow">Hiệu trưởng</p>
-    <h1>Phân công Giảng dạy &amp; Môn học</h1>
+    <h1>Môn học &amp; Giảng viên</h1>
   </div>
 </div>
 
@@ -14,27 +14,21 @@
           <th>Môn học</th>
           <th>Số tiết</th>
           <th>Tỷ lệ điểm</th>
-          <th>Giảng viên phụ trách</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        @for (subject of academic.subjects(); track subject.id) {
+        @for (subject of subjects(); track subject.id) {
           <tr>
             <td class="table__name">{{ subject.name }}</td>
-            <td>{{ subject.totalSessions }} tiết</td>
-            <td class="mono">{{ subject.processWeight }}% - {{ subject.componentWeight }}%</td>
-            <td>
-              @if (subject.assignedTeacherName) {
-                <span class="badge badge-pass">{{ subject.assignedTeacherName }}</span>
-              } @else {
-                <span class="badge badge-fail">Chưa phân công</span>
-              }
-            </td>
+            <td>{{ subject.totalLesson }} tiết</td>
+            <td class="mono">{{ subject.processWeight * 100 }}% - {{ subject.componentWeight * 100 }}%</td>
             <td>
               <button class="btn btn-ghost" (click)="openAssign(subject)">Phân công</button>
             </td>
           </tr>
+        } @empty {
+          <tr><td colspan="4" class="table__empty">Chưa có môn học nào.</td></tr>
         }
       </tbody>
     </table>
@@ -45,18 +39,20 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Giảng viên</th>
-          <th>Email</th>
-          <th>Số môn phụ trách</th>
+          <th>Mã GV</th>
+          <th>Họ tên</th>
+          <th>Khoa/Bộ môn</th>
         </tr>
       </thead>
       <tbody>
-        @for (teacher of academic.teachers(); track teacher.id) {
+        @for (teacher of teachers(); track teacher.id) {
           <tr>
+            <td class="mono">{{ teacher.code }}</td>
             <td class="table__name">{{ teacher.fullName }}</td>
-            <td class="mono">{{ teacher.email }}</td>
-            <td><span class="badge badge-count">{{ teacher.subjectIds.length }} môn</span></td>
+            <td>{{ teacher.department }}</td>
           </tr>
+        } @empty {
+          <tr><td colspan="3" class="table__empty">Chưa có giảng viên nào.</td></tr>
         }
       </tbody>
     </table>
@@ -72,17 +68,27 @@
 
       <label class="field">
         <span>Chọn giảng viên phụ trách</span>
-        <select class="input" [(ngModel)]="pendingTeacherId">
+        <select class="input" [ngModel]="selectedTeacherId()" (ngModelChange)="selectedTeacherId.set($event)">
           <option [ngValue]="null" disabled>-- Chọn giảng viên --</option>
-          @for (teacher of academic.teachers(); track teacher.id) {
+          @for (teacher of teachers(); track teacher.id) {
             <option [ngValue]="teacher.id">{{ teacher.fullName }}</option>
           }
         </select>
       </label>
 
+      <label class="field" style="margin-top:14px;">
+        <span>Lớp áp dụng</span>
+        <input class="input" type="text" placeholder="vd: CNTT15A"
+          [ngModel]="classroomInput()" (ngModelChange)="classroomInput.set($event)" />
+      </label>
+
+      @if (assignError()) {
+        <p class="login-card__error" style="margin-top:14px;">{{ assignError() }}</p>
+      }
+
       <div class="assign-modal__actions">
         <button class="btn btn-ghost" (click)="closeAssign()">Hủy</button>
-        <button class="btn btn-primary" [disabled]="!pendingTeacherId() || saving()" (click)="confirmAssign()">
+        <button class="btn btn-primary" [disabled]="saving()" (click)="confirmAssign()">
           {{ saving() ? 'Đang lưu…' : 'Xác nhận phân công' }}
         </button>
       </div>

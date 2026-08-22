@@ -13,6 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
     : req;
 
+  //syntax: observable.pipe(operator1(), operator2())
   return next(authReq).pipe(
     catchError((err) => {
       if (err.status === 401) {

@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { StudentResponse } from '../dto/response/student-response.dto';
 import { SubjectResponse } from '../dto/response/subject-response.dto';
 import { ApiResponse } from '../dto/response/api-response.dto';
+import { ScoreResponse } from '../dto/response/score-response.dto';
 
 @Injectable({ providedIn: 'root' })
 export class StudentService {
@@ -23,7 +24,10 @@ export class StudentService {
   loadStudents(): void {
     this.loading.set(true);
     this.getAllStudents().subscribe({
-      next: (data) => { this.students.set(data); this.loading.set(false); },
+      next: (data) => {
+        this.students.set(data);
+        this.loading.set(false);
+      },
       error: () => this.loading.set(false),
     });
   }
@@ -37,7 +41,15 @@ export class StudentService {
   // Tính năng 3: danh sách môn học sinh viên đã đăng ký (chưa kèm điểm)
   getSubjectsByStudentId(studentId: number): Observable<SubjectResponse[]> {
     return this.http
-      .get<ApiResponse<SubjectResponse[]>>(`${this.baseUrl}/students/${studentId}/subjects`)
+      .get<
+        ApiResponse<SubjectResponse[]>
+      >(`${this.baseUrl}/students/${studentId}/subjects`)
+      .pipe(map((res) => res.data));
+  }
+
+  getMyScores(): Observable<ScoreResponse[]> {
+    return this.http
+      .get<ApiResponse<ScoreResponse[]>>(`${this.baseUrl}/students/scores`)
       .pipe(map((res) => res.data));
   }
 }

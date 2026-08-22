@@ -11,7 +11,9 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () =>
-          import('./pages/auth/login/login.component').then((m) => m.LoginComponent),
+          import('./pages/auth/login/login.component').then(
+            (m) => m.LoginComponent,
+          ),
       },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
@@ -26,7 +28,9 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ROLE_PRINCIPAL'] },
         loadComponent: () =>
-          import('./pages/principal/students/students.component').then((m) => m.StudentsComponent),
+          import('./pages/principal/students/students.component').then(
+            (m) => m.StudentsComponent,
+          ),
       },
       {
         path: 'principal/subjects-teachers',
@@ -34,7 +38,7 @@ export const routes: Routes = [
         data: { roles: ['ROLE_PRINCIPAL'] },
         loadComponent: () =>
           import('./pages/principal/subjects-teachers/subjects-teachers.component').then(
-            (m) => m.SubjectsTeachersComponent
+            (m) => m.SubjectsTeachersComponent,
           ),
       },
       {
@@ -43,16 +47,7 @@ export const routes: Routes = [
         data: { roles: ['ROLE_TEACHER'] },
         loadComponent: () =>
           import('./pages/teacher/classes/teacher-classes.component').then(
-            (m) => m.TeacherClassesComponent
-          ),
-      },
-      {
-        path: 'teacher/classes/:classId/scores',
-        canActivate: [roleGuard],
-        data: { roles: ['ROLE_TEACHER'] },
-        loadComponent: () =>
-          import('./pages/teacher/scores/class-scores.component').then(
-            (m) => m.ClassScoresComponent
+            (m) => m.TeacherClassesComponent,
           ),
       },
       {
@@ -61,7 +56,7 @@ export const routes: Routes = [
         data: { roles: ['ROLE_STUDENT'] },
         loadComponent: () =>
           import('./pages/student/my-scores/my-scores.component').then(
-            (m) => m.MyScoresComponent
+            (m) => m.MyScoresComponent,
           ),
       },
       // TODO: chỗ này sau sửa lại redirect tới home theo role

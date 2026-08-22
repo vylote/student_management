@@ -1,22 +1,58 @@
-import { Component, OnInit } from '@angular/core';
-import { ScoreService } from '../../../core/services/score.service';
-import { MyScoreRow } from '../../../core/models/academic.model';
+import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { StudentService } from '../../../core/services/student.service';
+import { SubjectService } from '../../../core/services/subject.service';
+import { ScoreResponse } from '../../../core/dto/response/score-response.dto';
+
+interface MyScoreRow {
+  subjectName: string;
+  totalLesson: number;
+  processScore: number;
+  componentScore: number;
+  finalScore: number;
+  passed: boolean;
+}
 
 @Component({
   selector: 'app-my-scores',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './my-scores.component.html',
   styleUrl: './my-scores.component.scss',
 })
 export class MyScoresComponent implements OnInit {
-  constructor(public scoreService: ScoreService) {}
+  rows = signal<MyScoreRow[]>([]);
+  loading = signal(false);
+
+  constructor(
+    private studentService: StudentService,
+    private subjectService: SubjectService
+  ) {}
 
   ngOnInit(): void {
-    this.scoreService.loadMyScores();
-  }
-
-  isPass(row: MyScoreRow): boolean | null {
-    return ScoreService.isPass(row.finalScore);
+    this.loading.set(true);
+    forkJoin({
+      scores: this.studentService.getMyScores(),
+      subjectsPage: this.subjectService.searchSubjects({ page: 1, size: 100 }),
+    }).subscribe({
+      next: ({ scores, subjectsPage }) => {
+        const subjects = subjectsPage.data;
+        const merged: MyScoreRow[] = scores.map((score: ScoreResponse) => {
+          const subject = subjects.find((s) => s.id === score.subjectId);
+          return {
+            subjectName: subject?.name ?? `Môn #${score.subjectId}`,
+            totalLesson: subject?.totalLesson ?? 0,
+            processScore: score.processScore,
+            componentScore: score.componentScore,
+            finalScore: score.finalScore,
+            passed: score.passed,
+          };
+        });
+        this.rows.set(merged);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
   }
 }

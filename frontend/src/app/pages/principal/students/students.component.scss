@@ -1,2 +1,46 @@
-// Các style dùng chung (page-head, table, drawer) đã đặt trong src/styles.scss
-// File này chỉ chứa style riêng của trang, hiện chưa cần thêm.
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+
+  .field {
+    min-width: 160px;
+    flex: 1 1 160px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    padding-bottom: 1px; // căn baseline với input
+  }
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+
+  &__label {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+}
+
+.assign-modal {
+  width: min(400px, 100%);
+
+  &__title { font-size: 1.15rem; margin-bottom: 6px; }
+  &__subject { color: var(--ink-soft); font-size: 0.88rem; margin: 0 0 22px; }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+  }
+}

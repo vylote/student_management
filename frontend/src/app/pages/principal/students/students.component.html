@@ -3,7 +3,72 @@
     <p class="page-head__eyebrow">Hiệu trưởng</p>
     <h1>Quản lý Sinh viên</h1>
   </div>
-  <span class="page-head__count">{{ studentService.students().length }} sinh viên</span>
+  <button class="btn btn-gold" (click)="openAddForm()">+ Thêm sinh viên</button>
+</div>
+
+<!-- Bộ lọc tìm kiếm -->
+<div class="card filter-bar">
+  <label class="field">
+    <span>Tên sinh viên</span>
+    <input
+      class="input"
+      type="text"
+      placeholder="vd: Nguyễn Văn A"
+      [ngModel]="filterName()"
+      (ngModelChange)="filterName.set($event)"
+    />
+  </label>
+
+  <label class="field">
+    <span>Mã SV</span>
+    <input
+      class="input"
+      type="text"
+      placeholder="vd: SV001"
+      [ngModel]="filterCode()"
+      (ngModelChange)="filterCode.set($event)"
+    />
+  </label>
+
+  <label class="field">
+    <span>Khóa</span>
+    <input
+      class="input"
+      type="text"
+      placeholder="vd: K15"
+      [ngModel]="filterCohort()"
+      (ngModelChange)="filterCohort.set($event)"
+    />
+  </label>
+
+  <label class="field">
+    <span>Lớp</span>
+    <input
+      class="input"
+      type="text"
+      placeholder="vd: CNTT15A"
+      [ngModel]="filterClassroom()"
+      (ngModelChange)="filterClassroom.set($event)"
+    />
+  </label>
+
+  <label class="field">
+    <span>Tài khoản</span>
+    <select
+      class="input"
+      [ngModel]="filterHasAccount()"
+      (ngModelChange)="filterHasAccount.set($event)"
+    >
+      <option value="">Tất cả</option>
+      <option value="true">Đã có tài khoản</option>
+      <option value="false">Chưa có tài khoản</option>
+    </select>
+  </label>
+
+  <div class="filter-bar__actions">
+    <button class="btn btn-gold" (click)="search()">Tìm kiếm</button>
+    <button class="btn btn-ghost" (click)="resetFilters()">Xóa lọc</button>
+  </div>
 </div>
 
 <div class="card table-card">
@@ -14,27 +79,76 @@
         <th>Họ tên</th>
         <th>Lớp</th>
         <th>Khóa</th>
+        <th>Tài khoản</th>
       </tr>
     </thead>
     <tbody>
-      @for (student of studentService.students(); track student.id) {
-        <tr (click)="openDetail(student)" class="table__row">
-          <td class="mono">{{ student.code }}</td>
-          <td class="table__name">{{ student.fullName }}</td>
-          <td>{{ student.classroom }}</td>
-          <td>{{ student.cohort }}</td>
+      @if (loadingList()) {
+        <tr>
+          <td colspan="5" class="table__empty">Đang tải...</td>
         </tr>
-      } @empty {
-        <tr><td colspan="4" class="table__empty">Chưa có dữ liệu sinh viên.</td></tr>
+      } @else {
+        @for (student of students(); track student.id) {
+          <tr (click)="openDetail(student)" class="table__row">
+            <td class="mono">{{ student.code }}</td>
+            <td class="table__name">{{ student.fullName }}</td>
+            <td>{{ student.classroom }}</td>
+            <td>{{ student.cohort }}</td>
+            <td>
+              @if (student.accountId) {
+                <span class="badge badge-pass">Đã có</span>
+              } @else {
+                <button
+                  class="btn btn-ghost"
+                  style="padding: 5px 10px; font-size: 0.76rem"
+                  (click)="openCreateAccount(student, $event)"
+                >
+                  Tạo tài khoản
+                </button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="table__empty">
+              Không tìm thấy sinh viên phù hợp.
+            </td>
+          </tr>
+        }
       }
     </tbody>
   </table>
 </div>
 
+@if (totalPages() > 1) {
+  <div class="pagination-bar">
+    <button
+      class="btn btn-ghost"
+      [disabled]="currentPage() === 1"
+      (click)="changePage(-1)"
+    >
+      ← Trước
+    </button>
+    <span class="pagination-bar__label"
+      >Trang {{ currentPage() }} / {{ totalPages() }}</span
+    >
+    <button
+      class="btn btn-ghost"
+      [disabled]="currentPage() === totalPages()"
+      (click)="changePage(1)"
+    >
+      Sau →
+    </button>
+  </div>
+}
+
+<!-- Detail Drawer -->
 @if (selectedStudent(); as s) {
   <div class="drawer-overlay" (click)="closeDetail()">
     <aside class="drawer" (click)="$event.stopPropagation()">
-      <button class="drawer__close" (click)="closeDetail()" aria-label="Đóng">✕</button>
+      <button class="drawer__close" (click)="closeDetail()" aria-label="Đóng">
+        ✕
+      </button>
 
       <div class="drawer__profile">
         <h2>{{ s.fullName }}</h2>
@@ -42,8 +156,14 @@
       </div>
 
       <dl class="drawer__facts">
-        <div><dt>Ngày sinh</dt><dd>{{ s.dateOfBirth }}</dd></div>
-        <div><dt>Giới tính</dt><dd>{{ s.gender }}</dd></div>
+        <div>
+          <dt>Ngày sinh</dt>
+          <dd>{{ s.dateOfBirth }}</dd>
+        </div>
+        <div>
+          <dt>Giới tính</dt>
+          <dd>{{ s.gender }}</dd>
+        </div>
       </dl>
 
       <h3 class="drawer__subheading">
@@ -67,9 +187,9 @@
             @for (sub of enrolledSubjects(); track sub.subjectId) {
               <tr>
                 <td>{{ sub.subjectName }}</td>
-                <td>{{ sub.processScore ?? '—' }}</td>
-                <td>{{ sub.componentScore ?? '—' }}</td>
-                <td>{{ sub.finalScore ?? '—' }}</td>
+                <td>{{ sub.processScore ?? "—" }}</td>
+                <td>{{ sub.componentScore ?? "—" }}</td>
+                <td>{{ sub.finalScore ?? "—" }}</td>
                 <td>
                   @if (sub.passed === null) {
                     <span class="badge badge-count">Chưa có điểm</span>
@@ -81,11 +201,159 @@
                 </td>
               </tr>
             } @empty {
-              <tr><td colspan="5" class="table__empty">Sinh viên chưa đăng ký môn nào.</td></tr>
+              <tr>
+                <td colspan="5" class="table__empty">
+                  Sinh viên chưa đăng ký môn nào.
+                </td>
+              </tr>
             }
           </tbody>
         </table>
       }
+    </aside>
+  </div>
+}
+
+<!-- Modal Thêm sinh viên -->
+@if (showAddForm()) {
+  <div class="drawer-overlay" (click)="closeAddForm()">
+    <aside class="drawer assign-modal" (click)="$event.stopPropagation()">
+      <button class="drawer__close" (click)="closeAddForm()" aria-label="Đóng">
+        ✕
+      </button>
+      <h2 class="assign-modal__title">Thêm sinh viên mới</h2>
+
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <label class="field">
+          <span>Mã sinh viên</span>
+          <input
+            class="input"
+            type="text"
+            placeholder="vd: SV001"
+            [ngModel]="newStudent().code"
+            (ngModelChange)="updateNewStudent('code', $event)"
+          />
+          <small style="color: var(--ink-soft); font-size: 0.72rem"
+            >Định dạng: SV + ít nhất 3 chữ số</small
+          >
+        </label>
+        <label class="field">
+          <span>Họ tên</span>
+          <input
+            class="input"
+            type="text"
+            [ngModel]="newStudent().fullName"
+            (ngModelChange)="updateNewStudent('fullName', $event)"
+          />
+        </label>
+        <label class="field">
+          <span>Giới tính</span>
+          <select
+            class="input"
+            [ngModel]="newStudent().gender"
+            (ngModelChange)="updateNewStudent('gender', $event)"
+          >
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Ngày sinh</span>
+          <input
+            class="input"
+            type="date"
+            [ngModel]="newStudent().dateOfBirth"
+            (ngModelChange)="updateNewStudent('dateOfBirth', $event)"
+          />
+        </label>
+        <label class="field">
+          <span>Lớp</span>
+          <input
+            class="input"
+            type="text"
+            placeholder="vd: CNTT15A"
+            [ngModel]="newStudent().classroom"
+            (ngModelChange)="updateNewStudent('classroom', $event)"
+          />
+        </label>
+        <label class="field">
+          <span>Khóa</span>
+          <input
+            class="input"
+            type="text"
+            placeholder="vd: K15"
+            [ngModel]="newStudent().cohort"
+            (ngModelChange)="updateNewStudent('cohort', $event)"
+          />
+        </label>
+      </div>
+
+      @if (addError()) {
+        <p class="login-card__error" style="margin-top: 14px">
+          {{ addError() }}
+        </p>
+      }
+
+      <div class="assign-modal__actions">
+        <button class="btn btn-ghost" (click)="closeAddForm()">Hủy</button>
+        <button
+          class="btn btn-primary"
+          [disabled]="addingStudent()"
+          (click)="submitAddStudent()"
+        >
+          {{ addingStudent() ? "Đang lưu…" : "Thêm sinh viên" }}
+        </button>
+      </div>
+    </aside>
+  </div>
+}
+
+<!-- Modal Tạo tài khoản -->
+@if (creatingAccountFor(); as student) {
+  <div class="drawer-overlay" (click)="closeCreateAccount()">
+    <aside class="drawer assign-modal" (click)="$event.stopPropagation()">
+      <button
+        class="drawer__close"
+        (click)="closeCreateAccount()"
+        aria-label="Đóng"
+      >
+        ✕
+      </button>
+      <h2 class="assign-modal__title">Tạo tài khoản</h2>
+      <p class="assign-modal__subject">
+        Cho sinh viên:
+        <strong>{{ student.fullName }} ({{ student.code }})</strong>
+      </p>
+
+      <label class="field">
+        <span>Mật khẩu</span>
+        <input
+          class="input"
+          type="password"
+          placeholder="Nhập mật khẩu"
+          [ngModel]="newPassword()"
+          (ngModelChange)="newPassword.set($event)"
+        />
+      </label>
+
+      @if (accountError()) {
+        <p class="login-card__error" style="margin-top: 14px">
+          {{ accountError() }}
+        </p>
+      }
+
+      <div class="assign-modal__actions">
+        <button class="btn btn-ghost" (click)="closeCreateAccount()">
+          Hủy
+        </button>
+        <button
+          class="btn btn-primary"
+          [disabled]="creatingAccount() || !newPassword()"
+          (click)="submitCreateAccount()"
+        >
+          {{ creatingAccount() ? "Đang tạo…" : "Tạo tài khoản" }}
+        </button>
+      </div>
     </aside>
   </div>
 }

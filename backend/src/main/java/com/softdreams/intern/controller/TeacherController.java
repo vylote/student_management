@@ -27,8 +27,10 @@ public class TeacherController {
 
     @PreAuthorize("hasAuthority('teacher:write')")
     @PostMapping
-    public TeacherResponse addTeacher(@Valid @RequestBody CreateTeacherRequest request) {
-        return teacherService.addTeacher(request);
+    public ApiResponse<TeacherResponse> addTeacher(@Valid @RequestBody CreateTeacherRequest request) {
+        return ApiResponse.<TeacherResponse>builder()
+                .data(teacherService.addTeacher(request))
+                .build();
     }
 
     @PreAuthorize("hasAuthority('account:write')")

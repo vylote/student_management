@@ -26,3 +26,19 @@
     margin-top: 24px;
   }
 }
+
+.section-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 4px;
+
+  .section-title { padding: 0; }
+}
+
+.filter-bar--compact {
+  padding: 12px 18px;
+  margin-bottom: 4px;
+
+  .field { min-width: 120px; }
+}

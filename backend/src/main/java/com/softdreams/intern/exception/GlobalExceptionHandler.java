@@ -2,13 +2,17 @@ package com.softdreams.intern.exception;
 
 import com.softdreams.intern.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import tools.jackson.databind.exc.InvalidFormatException;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -26,7 +30,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse<?>> handlingRuntimeException(Exception e) {
-        log.error("Lỗi 9999: ", e);
+        log.error("Lỗi 0000: ", e);
         ErrorCode errorCode = ErrorCode.UNCATEGORIZED_EXCEPTION;
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
@@ -38,8 +42,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse<?>> handlingValidationException(MethodArgumentNotValidException e) {
-        // Lấy message lỗi đầu tiên từ Custom Validator
-        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+
+        // Dùng Collectors.joining(". ") để nối các lỗi, tự động ngăn cách bằng dấu chấm
+        String errorMessage = e.getBindingResult().getFieldErrors().stream()
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining(". "));
 
         ErrorCode errorCode = ErrorCode.INVALID_DATA;
 
@@ -72,6 +79,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = NoResourceFoundException.class)
     ResponseEntity<ApiResponse<?>> handlingNoResourceFoundException() {
         ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .msg(errorCode.getMsg())
+                        .build());
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse<?>> handlingAccessDeniedException() {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()

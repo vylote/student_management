@@ -1,0 +1,51 @@
+<app-modal-shell [compact]="true" (close)="cancel.emit()">
+  <h2 class="assign-modal__title">Thêm sinh viên mới</h2>
+
+  <div style="display:flex; flex-direction:column; gap:14px;">
+    <label class="field">
+      <span>Mã sinh viên</span>
+      <input class="input" type="text" placeholder="vd: SV001"
+        [ngModel]="form().code" (ngModelChange)="updateField('code', $event)" />
+      <small style="color:var(--ink-soft); font-size:0.72rem;">Định dạng: SV + ít nhất 3 chữ số</small>
+    </label>
+    <label class="field">
+      <span>Họ tên</span>
+      <input class="input" type="text"
+        [ngModel]="form().fullName" (ngModelChange)="updateField('fullName', $event)" />
+    </label>
+    <label class="field">
+      <span>Giới tính</span>
+      <select class="input"
+        [ngModel]="form().gender" (ngModelChange)="updateField('gender', $event)">
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>Ngày sinh</span>
+      <input class="input" type="date"
+        [ngModel]="form().dateOfBirth" (ngModelChange)="updateField('dateOfBirth', $event)" />
+    </label>
+    <label class="field">
+      <span>Lớp</span>
+      <input class="input" type="text" placeholder="vd: CNTT15A"
+        [ngModel]="form().classroom" (ngModelChange)="updateField('classroom', $event)" />
+    </label>
+    <label class="field">
+      <span>Khóa</span>
+      <input class="input" type="text" placeholder="vd: K15"
+        [ngModel]="form().cohort" (ngModelChange)="updateField('cohort', $event)" />
+    </label>
+  </div>
+
+  @if (error) {
+    <p class="login-card__error" style="margin-top:14px;">{{ error }}</p>
+  }
+
+  <div class="assign-modal__actions">
+    <button class="btn btn-ghost" (click)="cancel.emit()">Hủy</button>
+    <button class="btn btn-primary" [disabled]="saving" (click)="onSubmit()">
+      {{ saving ? 'Đang lưu…' : 'Thêm sinh viên' }}
+    </button>
+  </div>
+</app-modal-shell>

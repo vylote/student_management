@@ -1,88 +1,74 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { StudentResponse } from '../../../core/dto/response/student-response.dto';
 import { StudentService } from '../../../core/services/student.service';
 import { ScoreService } from '../../../core/services/score.service';
 import { CreateStudentRequest } from '../../../core/dto/request/create-student-request.dto';
+import { EnrolledSubjectView } from '../../../core/models/enrolled-subject.model';
 
-interface EnrolledSubjectView {
-  subjectId: number;
-  subjectName: string;
-  processScore: number | null;
-  componentScore: number | null;
-  finalScore: number | null;
-  passed: boolean | null;
-}
+import { StudentFilterBarComponent, StudentFilterValue } from './components/student-filter-bar/student-filter-bar.component';
+import { StudentTableComponent } from './components/student-table/student-table.component';
+import { StudentDetailDrawerComponent } from './components/student-detail-drawer/student-detail-drawer.component';
+import { AddStudentModalComponent } from './components/add-student-modal/add-student-modal.component';
+import { CreateAccountModalComponent } from './components/create-account-modal/create-account-modal.component';
 
 @Component({
   selector: 'app-students',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    StudentFilterBarComponent,
+    StudentTableComponent,
+    StudentDetailDrawerComponent,
+    AddStudentModalComponent,
+    CreateAccountModalComponent,
+  ],
   templateUrl: './students.component.html',
   styleUrl: './students.component.scss',
 })
 export class StudentsComponent implements OnInit {
-  // Danh sách + phân trang
+  // --- State gốc: danh sách + phân trang ---
   students = signal<StudentResponse[]>([]);
   loadingList = signal(false);
   currentPage = signal(1);
   totalPages = signal(1);
   readonly pageSize = 10;
+  private currentFilter: StudentFilterValue = {};
 
-  // Bộ lọc
-  filterName = signal('');
-  filterCode = signal('');
-  filterCohort = signal('');
-  filterClassroom = signal('');
-  filterHasAccount = signal<string>('');
-
-  // Drawer chi tiết
+  // --- State: Drawer chi tiết ---
   selectedStudent = signal<StudentResponse | null>(null);
   enrolledSubjects = signal<EnrolledSubjectView[]>([]);
   loadingDetail = signal(false);
 
-  // Modal thêm sinh viên
+  // --- State: Modal thêm sinh viên ---
   showAddForm = signal(false);
-  newStudent = signal<CreateStudentRequest>({
-    code: '',
-    fullName: '',
-    gender: 'Nam',
-    dateOfBirth: '',
-    classroom: '',
-    cohort: '',
-  });
   addingStudent = signal(false);
   addError = signal<string | null>(null);
 
-  // Modal tạo tài khoản
+  // --- State: Modal tạo tài khoản ---
   creatingAccountFor = signal<StudentResponse | null>(null);
-  newPassword = signal('');
   creatingAccount = signal(false);
   accountError = signal<string | null>(null);
 
   constructor(
     private studentService: StudentService,
-    private scoreService: ScoreService,
+    private scoreService: ScoreService
   ) {}
 
   ngOnInit(): void {
-    this.search();
+    this.fetchStudents();
   }
 
-  search(): void {
+  // --- Nhận sự kiện từ <app-student-filter-bar> ---
+  onFilterSearch(filter: StudentFilterValue): void {
+    this.currentFilter = filter;
     this.currentPage.set(1);
     this.fetchStudents();
   }
 
-  resetFilters(): void {
-    this.filterName.set('');
-    this.filterCode.set('');
-    this.filterCohort.set('');
-    this.filterClassroom.set('');
-    this.filterHasAccount.set('');
-    this.search();
+  onFilterReset(): void {
+    this.currentFilter = {};
+    this.currentPage.set(1);
+    this.fetchStudents();
   }
 
   changePage(delta: number): void {
@@ -94,22 +80,8 @@ export class StudentsComponent implements OnInit {
 
   private fetchStudents(): void {
     this.loadingList.set(true);
-
-    const hasAccountValue =
-      this.filterHasAccount() === ''
-        ? undefined
-        : this.filterHasAccount() === 'true';
-
     this.studentService
-      .searchStudents({
-        name: this.filterName().trim() || undefined,
-        code: this.filterCode().trim() || undefined,
-        cohort: this.filterCohort().trim() || undefined,
-        classroom: this.filterClassroom().trim() || undefined,
-        hasAccount: hasAccountValue,
-        page: this.currentPage(),
-        size: this.pageSize,
-      })
+      .searchStudents({ ...this.currentFilter, page: this.currentPage(), size: this.pageSize })
       .subscribe({
         next: (res) => {
           this.students.set(res.data);
@@ -120,6 +92,7 @@ export class StudentsComponent implements OnInit {
       });
   }
 
+  // --- Nhận sự kiện từ <app-student-table> ---
   openDetail(student: StudentResponse): void {
     this.selectedStudent.set(student);
     this.loadingDetail.set(true);
@@ -152,32 +125,19 @@ export class StudentsComponent implements OnInit {
     this.enrolledSubjects.set([]);
   }
 
-  // --- Thêm sinh viên ---
   openAddForm(): void {
-    this.newStudent.set({
-      code: '',
-      fullName: '',
-      gender: 'Nam',
-      dateOfBirth: '',
-      classroom: '',
-      cohort: '',
-    });
     this.addError.set(null);
     this.showAddForm.set(true);
   }
 
-  closeAddForm(): void {
-    this.showAddForm.set(false);
-  }
-
-  submitAddStudent(): void {
+  submitAddStudent(payload: CreateStudentRequest): void {
     this.addingStudent.set(true);
     this.addError.set(null);
-    this.studentService.addStudent(this.newStudent()).subscribe({
+    this.studentService.addStudent(payload).subscribe({
       next: () => {
         this.addingStudent.set(false);
         this.showAddForm.set(false);
-        this.search();
+        this.fetchStudents();
       },
       error: (err) => {
         this.addingStudent.set(false);
@@ -186,43 +146,28 @@ export class StudentsComponent implements OnInit {
     });
   }
 
-  // --- Tạo tài khoản ---
-  openCreateAccount(student: StudentResponse, event: Event): void {
-    event.stopPropagation();
-    this.creatingAccountFor.set(student);
-    this.newPassword.set('');
+  openCreateAccount(payload: { student: StudentResponse; event: Event }): void {
+    payload.event.stopPropagation();
+    this.creatingAccountFor.set(payload.student);
     this.accountError.set(null);
   }
 
-  closeCreateAccount(): void {
-    this.creatingAccountFor.set(null);
-  }
-
-  submitCreateAccount(): void {
+  submitCreateAccount(password: string): void {
     const student = this.creatingAccountFor();
-    if (!student || !this.newPassword()) return;
+    if (!student) return;
 
     this.creatingAccount.set(true);
     this.accountError.set(null);
-    this.studentService
-      .createAccount(student.code, { password: this.newPassword() })
-      .subscribe({
-        next: () => {
-          this.creatingAccount.set(false);
-          this.creatingAccountFor.set(null);
-          this.search();
-        },
-        error: (err) => {
-          this.creatingAccount.set(false);
-          this.accountError.set(err.error?.msg ?? 'Tạo tài khoản thất bại.');
-        },
-      });
-  }
-
-  updateNewStudent<K extends keyof CreateStudentRequest>(
-    field: K,
-    value: CreateStudentRequest[K],
-  ): void {
-    this.newStudent.update((s) => ({ ...s, [field]: value }));
+    this.studentService.createAccount(student.code, { password }).subscribe({
+      next: () => {
+        this.creatingAccount.set(false);
+        this.creatingAccountFor.set(null);
+        this.fetchStudents();
+      },
+      error: (err) => {
+        this.creatingAccount.set(false);
+        this.accountError.set(err.error?.msg ?? 'Tạo tài khoản thất bại.');
+      },
+    });
   }
 }

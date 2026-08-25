@@ -1,0 +1,23 @@
+<app-modal-shell [compact]="true" (close)="cancel.emit()">
+  <h2 class="assign-modal__title">Tạo tài khoản</h2>
+  <p class="assign-modal__subject">
+    Cho sinh viên: <strong>{{ student.fullName }} ({{ student.code }})</strong>
+  </p>
+
+  <label class="field">
+    <span>Mật khẩu</span>
+    <input class="input" type="password" placeholder="Nhập mật khẩu"
+      [ngModel]="password()" (ngModelChange)="password.set($event)" />
+  </label>
+
+  @if (error) {
+    <p class="login-card__error" style="margin-top:14px;">{{ error }}</p>
+  }
+
+  <div class="assign-modal__actions">
+    <button class="btn btn-ghost" (click)="cancel.emit()">Hủy</button>
+    <button class="btn btn-primary" [disabled]="saving || !password()" (click)="onSubmit()">
+      {{ saving ? 'Đang tạo…' : 'Tạo tài khoản' }}
+    </button>
+  </div>
+</app-modal-shell>

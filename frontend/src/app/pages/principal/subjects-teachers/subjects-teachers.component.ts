@@ -259,6 +259,8 @@ export class SubjectsTeachersComponent implements OnInit {
     this.newSubject.update((s) => ({ ...s, [field]: value }));
   }
 
+
+  //TODO: dup code nhưng vì dừng ở day 38 -> dừng tối ưu hóa sớm
   updateNewTeacher<K extends keyof CreateTeacherRequest>(
     field: K,
     value: CreateTeacherRequest[K],

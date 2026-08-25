@@ -1,0 +1,44 @@
+<app-modal-shell [compact]="false" (close)="closed.emit()">
+  <div class="drawer__profile">
+    <h2>{{ student.fullName }}</h2>
+    <p class="mono">{{ student.code }} · {{ student.classroom }} · {{ student.cohort }}</p>
+  </div>
+
+  <dl class="drawer__facts">
+    <div><dt>Ngày sinh</dt><dd>{{ student.dateOfBirth }}</dd></div>
+    <div><dt>Giới tính</dt><dd>{{ student.gender }}</dd></div>
+  </dl>
+
+  <h3 class="drawer__subheading">
+    Môn đã đăng ký &amp; điểm số ({{ enrolledSubjects.length }} môn)
+  </h3>
+
+  @if (loading) {
+    <p>Đang tải điểm...</p>
+  } @else {
+    <table class="table table--compact">
+      <thead>
+        <tr>
+          <th>Môn học</th>
+          <th>Quá trình</th>
+          <th>Thành phần</th>
+          <th>Tổng kết</th>
+          <th>Kết quả</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sub of enrolledSubjects; track sub.subjectId) {
+          <tr>
+            <td>{{ sub.subjectName }}</td>
+            <td>{{ sub.processScore ?? '—' }}</td>
+            <td>{{ sub.componentScore ?? '—' }}</td>
+            <td>{{ sub.finalScore ?? '—' }}</td>
+            <td><app-pass-badge [passed]="sub.passed"></app-pass-badge></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="table__empty">Sinh viên chưa đăng ký môn nào.</td></tr>
+        }
+      </tbody>
+    </table>
+  }
+</app-modal-shell>

@@ -1,0 +1,39 @@
+<div class="card filter-bar">
+  <label class="field">
+    <span>Tên sinh viên</span>
+    <input class="input" type="text" placeholder="vd: Nguyễn Văn A"
+      [ngModel]="filterName()" (ngModelChange)="filterName.set($event)" />
+  </label>
+
+  <label class="field">
+    <span>Mã SV</span>
+    <input class="input" type="text" placeholder="vd: SV001"
+      [ngModel]="filterCode()" (ngModelChange)="filterCode.set($event)" />
+  </label>
+
+  <label class="field">
+    <span>Khóa</span>
+    <input class="input" type="text" placeholder="vd: K15"
+      [ngModel]="filterCohort()" (ngModelChange)="filterCohort.set($event)" />
+  </label>
+
+  <label class="field">
+    <span>Lớp</span>
+    <input class="input" type="text" placeholder="vd: CNTT15A"
+      [ngModel]="filterClassroom()" (ngModelChange)="filterClassroom.set($event)" />
+  </label>
+
+  <label class="field">
+    <span>Tài khoản</span>
+    <select class="input" [ngModel]="filterHasAccount()" (ngModelChange)="filterHasAccount.set($event)">
+      <option value="">Tất cả</option>
+      <option value="true">Đã có tài khoản</option>
+      <option value="false">Chưa có tài khoản</option>
+    </select>
+  </label>
+
+  <div class="filter-bar__actions">
+    <button class="btn btn-gold" (click)="onSearch()">Tìm kiếm</button>
+    <button class="btn btn-ghost" (click)="onReset()">Xóa lọc</button>
+  </div>
+</div>
